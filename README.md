@@ -1,12 +1,12 @@
 # 🏥 MediSync Frontend (Client)
 
-> **Note:** This README is for the **frontend** (client) application only. The backend (API/server) has its own README located in the backend folder (`helthcare-server/HealthCare-Server/README.md`).
+> **Note:** This README is for the **frontend** (client) application only. The backend (API/server) has its own README located in the backend folder (`helthcare-server/MediSync-Server/README.md`).
 
 ---
 
-# 🏥 Healthcare Management Platform
+# 🏥 MediSync Management Platform
 
-A comprehensive healthcare management system built with Next.js 15, TypeScript, and Material-UI, featuring role-based access control, video consultations, appointment management, and payment integration.
+A comprehensive MediSync management system built with Next.js 15, TypeScript, and Material-UI, featuring role-based access control, video consultations, appointment management, and payment integration.
 
 ## 🚀 Live Demo
 
@@ -302,5 +302,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Note**: This is a full-stack healthcare management platform demonstrating modern web development practices, real-time communication, and comprehensive user management systems.
+**Note**: This is a full-stack MediSync management platform demonstrating modern web development practices, real-time communication, and comprehensive user management systems.
 ```
