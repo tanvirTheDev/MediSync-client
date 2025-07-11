@@ -102,7 +102,7 @@ const VideoCall = ({ videoCallingId }: { videoCallingId: string }) => {
       >
         <Alert severity="info" sx={{ width: "100%" }}>
           <Typography variant="body2">
-            <strong>Mobile Device Detected:</strong> Make sure you're using
+            <strong>Mobile Device Detected:</strong> Make sure you are using
             HTTPS and have granted camera/microphone permissions.
           </Typography>
         </Alert>
