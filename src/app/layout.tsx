@@ -16,8 +16,8 @@ import "./globals.css";
 // });
 
 export const metadata: Metadata = {
-  title: "Health Care",
-  description: "Health Care",
+  title: "MediSync",
+  description: "MediSync",
 };
 
 export default function RootLayout({
