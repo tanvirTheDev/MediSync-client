@@ -32,20 +32,67 @@ const LoginPage = () => {
   };
 
   return (
-    <Container sx={{ mt: 10 }}>
+    <Container sx={{ mt: { xs: 4, md: 10 } }}>
+      {/* Demo Accounts Section */}
       <Box
         sx={{
-          width: "600px",
-          boxShadow: 1,
-          height: "450px",
+          width: { xs: "100%", sm: "90%", md: "600px" },
           mx: "auto",
-          padding: "40px",
+          mb: { xs: 2, md: 3 },
+          p: { xs: 1.5, md: 2 },
+          border: "1px dashed #1976d2",
+          borderRadius: 2,
+          backgroundColor: "#f5faff",
+        }}
+      >
+        <Typography variant="h6" fontWeight={600} mb={1} color="primary.main">
+          Demo Accounts
+        </Typography>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+          <Box>
+            <Typography variant="subtitle2" fontWeight={500}>
+              Admin
+            </Typography>
+            <Typography variant="body2">Email: tanvir@gmail.com</Typography>
+            <Typography variant="body2">Password: 123456</Typography>
+          </Box>
+          <Box>
+            <Typography variant="subtitle2" fontWeight={500}>
+              Doctor
+            </Typography>
+            <Typography variant="body2">
+              Email: doctorpeterson@gmail.com
+            </Typography>
+            <Typography variant="body2">Password: 123456</Typography>
+          </Box>
+          <Box>
+            <Typography variant="subtitle2" fontWeight={500}>
+              Patient
+            </Typography>
+            <Typography variant="body2">Email: asif@gmail.com</Typography>
+            <Typography variant="body2">Password: 123456</Typography>
+          </Box>
+        </Stack>
+      </Box>
+      <Box
+        sx={{
+          width: { xs: "100%", sm: "90%", md: "600px" },
+          boxShadow: 1,
+          height: { xs: "auto", md: "450px" },
+          mx: "auto",
+          padding: { xs: 2, md: 5 },
         }}
       >
         {/* heading */}
         <Stack alignItems="center" pb={3}>
           <Image src={assets.svgs.logo} alt="logo" width={50} height={50} />
-          <Typography variant="h5" component="h1" fontWeight={700} my={1}>
+          <Typography
+            variant="h5"
+            component="h1"
+            fontWeight={700}
+            my={1}
+            fontSize={{ xs: 22, md: 28 }}
+          >
             Login Patient MediSync
           </Typography>
         </Stack>
@@ -58,7 +105,7 @@ const LoginPage = () => {
             password: "",
           }}
         >
-          <Stack direction="row" spacing={2}>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <InputForm name="email" label="Email" fullWidth type="email" />
             <InputForm
               name="password"
@@ -72,7 +119,11 @@ const LoginPage = () => {
               Forget Password
             </Link>
           </Box>
-          <Button fullWidth type="submit">
+          <Button
+            fullWidth
+            type="submit"
+            sx={{ py: 1.2, fontSize: { xs: 16, md: 18 } }}
+          >
             Login
           </Button>
         </PHForm>
