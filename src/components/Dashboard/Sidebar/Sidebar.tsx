@@ -2,50 +2,162 @@
 "use client";
 
 import asssets from "@/assets";
+import { USER_ROLE } from "@/constants/role";
 import { getUserInfo } from "@/services/auth.services";
-import { UserRole } from "@/types";
 import { drawerItems } from "@/utils/drawerItems";
-import { Box, Link, List, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Divider,
+  Link,
+  List,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SidebarItem from "./SidebarItem";
 
-// Extend JwtPayload to include the role property
-
 const Sidebar = () => {
-  const [userRole, setUserRole] = useState("");
-  console.log(userRole);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string>("User");
+  const [roleLabel, setRoleLabel] = useState<string>("");
 
   useEffect(() => {
-    const { role } = getUserInfo() as any;
-    const lowerCaseRole = role.toLowerCase();
-    setUserRole(lowerCaseRole);
+    const user = getUserInfo() as {
+      role?: string;
+      email?: string;
+      name?: string;
+    } | null;
+    if (user?.role) {
+      const roleKey = user.role.toUpperCase() as keyof typeof USER_ROLE;
+      const normalizedRole =
+        USER_ROLE[roleKey]?.toLowerCase() ?? user.role.toLowerCase();
+      setUserRole(normalizedRole);
+      const readable =
+        roleKey && USER_ROLE[roleKey]
+          ? roleKey
+              .toLowerCase()
+              .replace(/_/g, " ")
+              .replace(/\b\w/g, (c) => c.toUpperCase())
+          : user.role;
+      setRoleLabel(readable);
+    }
+    if (user?.name || user?.email) {
+      const source = user.name?.trim() || user.email?.split("@")[0] || "User";
+      setDisplayName(source);
+    }
   }, []);
 
+  const items = useMemo(() => {
+    if (!userRole) {
+      return [];
+    }
+    return drawerItems(userRole as any);
+  }, [userRole]);
+
   return (
-    <Box>
-      {/* Logo and Title */}
-      <Stack
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        gap={1}
-        pt={2}
-        component={Link}
-        href="/"
-      >
-        <Image src={asssets.svgs.logo} width={40} height={40} alt="logo" />
-        <Typography variant="h6" component="h1" sx={{ cursor: "pointer" }}>
-          MediSync
-        </Typography>
+    <Box
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        bgcolor: "rgba(21,134,253,0.04)",
+        borderRight: "1px solid",
+        borderColor: "divider",
+      }}
+    >
+      <Stack spacing={2.5} sx={{ px: 3, pt: 3 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          component={Link}
+          href="/"
+          gap={1.5}
+          sx={{ textDecoration: "none" }}
+        >
+          <Image
+            src={asssets.svgs.logo}
+            width={38}
+            height={38}
+            alt="MediSync logo"
+          />
+          <Typography
+            variant="h6"
+            component="h1"
+            sx={{
+              fontWeight: 700,
+              color: "text.primary",
+            }}
+          >
+            MediSync
+          </Typography>
+        </Stack>
+
+        <Box
+          sx={{
+            bgcolor: "white",
+            borderRadius: 3,
+            px: 2.5,
+            py: 2,
+            boxShadow: "0 8px 24px rgba(21,134,253,0.12)",
+          }}
+        >
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Avatar
+              alt="User avatar"
+              sx={{
+                width: 44,
+                height: 44,
+                bgcolor: "primary.main",
+                fontWeight: 600,
+              }}
+            >
+              {displayName.charAt(0).toUpperCase()}
+            </Avatar>
+            <Box>
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "0.95rem",
+                  color: "text.primary",
+                  maxWidth: 148,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {displayName}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  textTransform: "capitalize",
+                }}
+              >
+                {roleLabel || "Loading"}
+              </Typography>
+            </Box>
+          </Stack>
+        </Box>
       </Stack>
 
-      {/* Sidebar Menu */}
-      <List>
-        {drawerItems?.(userRole as UserRole).map((item, index) => (
-          <SidebarItem key={index} index={index} item={item} />
-        ))}
-      </List>
+      <Divider sx={{ mt: 3 }} />
+
+      <Box
+        sx={{
+          flex: 1,
+          overflowY: "auto",
+          py: 2,
+        }}
+      >
+        <List sx={{ px: 1 }}>
+          {items.map((item) => (
+            <SidebarItem key={item.title} item={item} />
+          ))}
+        </List>
+      </Box>
     </Box>
   );
 };

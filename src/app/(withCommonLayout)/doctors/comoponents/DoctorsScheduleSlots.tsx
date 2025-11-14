@@ -5,7 +5,16 @@ import { useInitialPaymentMutation } from "@/redux/api/payment";
 import { useGetAllSchedulesQuery } from "@/redux/api/scheduleApi";
 import { formatDate } from "@/utils/formatDate";
 import { getTimeIn12HourFormat } from "@/utils/getTimeIn12HoursForment";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Divider,
+  Stack,
+  Typography,
+} from "@mui/material";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useRouter } from "next/navigation";
@@ -103,13 +112,6 @@ const DoctorScheduleSlots = ({ id }: { id: string }) => {
   const availableTomorrowSlots = tomorrowSchedules;
   const availableDayAfterTomorrowSlots = dayAfterTomorrowSchedules;
 
-  console.log("Today Available Slots:", availableSlots);
-  console.log("Tomorrow Available Slots:", availableTomorrowSlots);
-  console.log(
-    "Day After Tomorrow Available Slots:",
-    availableDayAfterTomorrowSlots
-  );
-
   const [createAppointment] = useCreateAppointmentMutation();
   const [initialPayment] = useInitialPaymentMutation();
   const handleBookAppoinment = async () => {
@@ -119,7 +121,6 @@ const DoctorScheduleSlots = ({ id }: { id: string }) => {
           doctorId: id,
           scheduleId,
         }).unwrap();
-        console.log(res);
         if (res.id) {
           const response = await initialPayment(res.id).unwrap();
           if (response.paymentUrl && typeof response.paymentUrl === "string") {
@@ -134,149 +135,241 @@ const DoctorScheduleSlots = ({ id }: { id: string }) => {
     }
   };
 
+  const renderScheduleSection = (
+    title: string,
+    date: string,
+    schedules: any[],
+    loading: boolean
+  ) => {
+    return (
+      <Card
+        elevation={0}
+        sx={{
+          borderRadius: 3,
+          border: "1px solid",
+          borderColor: "divider",
+          boxShadow:
+            "0 4px 20px rgba(21,134,253,0.08), 0 2px 8px rgba(8,17,52,0.04)",
+          mb: 3,
+        }}
+      >
+        <CardContent sx={{ p: { xs: 2.5, md: 3.5 } }}>
+          <Stack spacing={3}>
+            <Box>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  fontSize: { xs: "1rem", md: "1.125rem" },
+                  color: "text.primary",
+                  mb: 0.5,
+                }}
+              >
+                {title}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  fontSize: { xs: "0.875rem", md: "0.95rem" },
+                }}
+              >
+                {date}
+              </Typography>
+            </Box>
+
+            <Divider />
+
+            {loading ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  py: 4,
+                }}
+              >
+                <CircularProgress size={32} />
+              </Box>
+            ) : schedules && schedules.length > 0 ? (
+              <Stack
+                direction="row"
+                alignItems="center"
+                flexWrap="wrap"
+                gap={1.5}
+              >
+                {schedules.map((schedule: any) => {
+                  const formattedTimeSlot = `${getTimeIn12HourFormat(
+                    schedule?.startDate
+                  )} - ${getTimeIn12HourFormat(schedule?.endDate)}`;
+
+                  const isSelected = schedule?.id === scheduleId;
+
+                  return (
+                    <Button
+                      key={schedule?.id}
+                      onClick={() => setScheduleId(schedule?.id)}
+                      variant={isSelected ? "contained" : "outlined"}
+                      color="primary"
+                      sx={{
+                        textTransform: "none",
+                        borderRadius: 2,
+                        minWidth: { xs: "100px", sm: "120px" },
+                        fontSize: { xs: "0.875rem", md: "0.95rem" },
+                        fontWeight: isSelected ? 600 : 500,
+                        boxShadow: isSelected
+                          ? "0 4px 12px rgba(21,134,253,0.3)"
+                          : "none",
+                        "&:hover": {
+                          boxShadow: isSelected
+                            ? "0 6px 16px rgba(21,134,253,0.4)"
+                            : "0 2px 8px rgba(21,134,253,0.2)",
+                        },
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      {formattedTimeSlot}
+                    </Button>
+                  );
+                })}
+              </Stack>
+            ) : (
+              <Box
+                sx={{
+                  textAlign: "center",
+                  py: 3,
+                  px: 2,
+                  bgcolor: "action.hover",
+                  borderRadius: 2,
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    fontSize: { xs: "0.875rem", md: "0.95rem" },
+                  }}
+                >
+                  No available slots for this day
+                </Typography>
+              </Box>
+            )}
+          </Stack>
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
-    <Box mb={5}>
-      <Box sx={{ bgcolor: "white", p: 3, mt: 1 }}>
-        <Typography variant="h4" mb={3} color="primary.main">
-          Availability
+    <Box sx={{ mb: { xs: 4, md: 6 } }}>
+      <Stack spacing={3}>
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 700,
+            fontSize: { xs: "1.5rem", md: "2rem" },
+            color: "text.primary",
+            mb: 1,
+          }}
+        >
+          Select Your Preferred Time
         </Typography>
-        <Typography variant="h6" fontSize={16}>
-          <b>Today: {formatDate(currentDate.toISOString()) + " " + today}</b>
-        </Typography>
-        <Box sx={{ borderBottom: "2px dashed #d0d0d0", mt: 2, mb: 3 }} />
 
-        {isLoading ? (
-          <Typography>Loading schedules...</Typography>
-        ) : (
-          <Stack direction="row" alignItems="center" flexWrap="wrap" gap={2}>
-            {availableSlots && availableSlots.length > 0 ? (
-              availableSlots.map((schedule: any) => {
-                console.log("Processing today schedule:", schedule);
-
-                const formattedTimeSlot = `${getTimeIn12HourFormat(
-                  schedule?.startDate
-                )} - ${getTimeIn12HourFormat(schedule?.endDate)}`;
-
-                return (
-                  <Button
-                    key={schedule?.id}
-                    color="primary"
-                    onClick={() => setScheduleId(schedule?.id)}
-                    variant={
-                      schedule?.id === scheduleId ? "contained" : "outlined"
-                    }
-                  >
-                    {formattedTimeSlot}
-                  </Button>
-                );
-              })
-            ) : (
-              <Typography color="error.main">
-                No Schedule is Available Today!
-              </Typography>
-            )}
-          </Stack>
+        {renderScheduleSection(
+          "Today",
+          `${formatDate(currentDate.toISOString())} · ${today}`,
+          availableSlots || [],
+          isLoading
         )}
 
-        {/* Tomorrow's Schedule Section */}
-        <Typography variant="h6" fontSize={16} mt={5}>
-          <b>
-            Tomorrow: {formatDate(tomorrowDate.toISOString()) + " " + tomorrow}
-          </b>
-        </Typography>
-        <Box sx={{ borderBottom: "2px dashed #d0d0d0", mt: 2, mb: 3 }} />
-
-        {tomorrowLoading ? (
-          <Typography>Loading tomorrow schedules...</Typography>
-        ) : (
-          <Stack direction="row" alignItems="center" flexWrap="wrap" gap={2}>
-            {availableTomorrowSlots && availableTomorrowSlots.length > 0 ? (
-              availableTomorrowSlots.map((schedule: any) => {
-                console.log("Processing tomorrow schedule:", schedule);
-
-                const formattedTimeSlot = `${getTimeIn12HourFormat(
-                  schedule?.startDate
-                )} - ${getTimeIn12HourFormat(schedule?.endDate)}`;
-
-                return (
-                  <Button
-                    key={schedule?.id}
-                    color="primary"
-                    onClick={() => setScheduleId(schedule?.id)}
-                    variant={
-                      schedule?.id === scheduleId ? "contained" : "outlined"
-                    }
-                  >
-                    {formattedTimeSlot}
-                  </Button>
-                );
-              })
-            ) : (
-              <Typography color="error.main">
-                No Schedule is Available Tomorrow!
-              </Typography>
-            )}
-          </Stack>
+        {renderScheduleSection(
+          "Tomorrow",
+          `${formatDate(tomorrowDate.toISOString())} · ${tomorrow}`,
+          availableTomorrowSlots || [],
+          tomorrowLoading
         )}
 
-        {/* Day After Tomorrow's Schedule Section */}
-        <Typography variant="h6" fontSize={16} mt={5}>
-          <b>
-            Day After Tomorrow:{" "}
-            {formatDate(dayAfterTomorrowDate.toISOString()) +
-              " " +
-              dayAfterTomorrow}
-          </b>
-        </Typography>
-        <Box sx={{ borderBottom: "2px dashed #d0d0d0", mt: 2, mb: 3 }} />
-
-        {dayAfterTomorrowLoading ? (
-          <Typography>Loading day after tomorrow schedules...</Typography>
-        ) : (
-          <Stack direction="row" alignItems="center" flexWrap="wrap" gap={2}>
-            {availableDayAfterTomorrowSlots &&
-            availableDayAfterTomorrowSlots.length > 0 ? (
-              availableDayAfterTomorrowSlots.map((schedule: any) => {
-                console.log(
-                  "Processing day after tomorrow schedule:",
-                  schedule
-                );
-
-                const formattedTimeSlot = `${getTimeIn12HourFormat(
-                  schedule?.startDate
-                )} - ${getTimeIn12HourFormat(schedule?.endDate)}`;
-
-                return (
-                  <Button
-                    key={schedule?.id}
-                    color="primary"
-                    onClick={() => setScheduleId(schedule?.id)}
-                    variant={
-                      schedule?.id === scheduleId ? "contained" : "outlined"
-                    }
-                  >
-                    {formattedTimeSlot}
-                  </Button>
-                );
-              })
-            ) : (
-              <Typography color="error.main">
-                No Schedule is Available Day After Tomorrow!
-              </Typography>
-            )}
-          </Stack>
+        {renderScheduleSection(
+          "Day After Tomorrow",
+          `${formatDate(
+            dayAfterTomorrowDate.toISOString()
+          )} · ${dayAfterTomorrow}`,
+          availableDayAfterTomorrowSlots || [],
+          dayAfterTomorrowLoading
         )}
-      </Box>
+      </Stack>
 
       {scheduleId && (
-        <Button
-          onClick={handleBookAppoinment}
-          sx={{ display: "block", mx: "auto", mt: 2 }}
-          variant="contained"
-          color="primary"
+        <Box
+          sx={{
+            position: "sticky",
+            bottom: { xs: 16, md: 24 },
+            mt: 4,
+            zIndex: 10,
+          }}
         >
-          Book Appointment Now
-        </Button>
+          <Card
+            elevation={8}
+            sx={{
+              borderRadius: 3,
+              background:
+                "linear-gradient(135deg, rgba(21,134,253,0.95) 0%, rgba(21,134,253,0.98) 100%)",
+              border: "none",
+            }}
+          >
+            <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={2}
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Box>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      color: "white",
+                      fontWeight: 600,
+                      fontSize: { xs: "1rem", md: "1.125rem" },
+                      mb: 0.5,
+                    }}
+                  >
+                    Ready to book?
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "rgba(255,255,255,0.9)",
+                      fontSize: { xs: "0.875rem", md: "0.95rem" },
+                    }}
+                  >
+                    Confirm your appointment slot
+                  </Typography>
+                </Box>
+                <Button
+                  onClick={handleBookAppoinment}
+                  variant="contained"
+                  sx={{
+                    bgcolor: "white",
+                    color: "primary.main",
+                    textTransform: "none",
+                    borderRadius: 2,
+                    px: { xs: 3, md: 4 },
+                    py: { xs: 1.25, md: 1.5 },
+                    fontSize: { xs: "0.95rem", md: "1rem" },
+                    fontWeight: 600,
+                    minWidth: { xs: "100%", sm: "200px" },
+                    "&:hover": {
+                      bgcolor: "rgba(255,255,255,0.95)",
+                    },
+                  }}
+                >
+                  Book Appointment Now
+                </Button>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Box>
       )}
     </Box>
   );

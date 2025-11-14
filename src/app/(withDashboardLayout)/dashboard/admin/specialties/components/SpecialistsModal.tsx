@@ -6,7 +6,8 @@ import PHForm from "@/components/Form/PHForm";
 import PHModal from "@/components/Shared/PHModal/PHModal";
 import { useCreateSpecialistsMutation } from "@/redux/api/specialistsApi";
 import { modifyData } from "@/utils/modifyData";
-import { Button } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { Box, Stack, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
@@ -15,59 +16,84 @@ type TProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
 const SpecialistsModal = ({ open, setOpen }: TProps) => {
-  const [createSpecialitis] = useCreateSpecialistsMutation();
+  const [createSpecialitis, { isLoading }] = useCreateSpecialistsMutation();
+
   const handleSubmit = async (values: FieldValues) => {
-    console.log("Form Values:", values);
-
-    // Ensure we have a file
     if (!values.file) {
-      toast.error("Please select a file");
+      toast.error("Please select an icon for the specialty.");
       return;
     }
 
-    // Validate file type
     if (!values.file.type.startsWith("image/")) {
-      toast.error("Please select a valid image file");
+      toast.error("Please upload a valid image file (PNG, JPG, SVG).");
       return;
     }
 
-    // Filter out only the fields we need for specialties
-    const specialtyData = {
-      title: values.title,
-    };
-
-    // Use the modifyData utility function with filtered data
+    const specialtyData = { title: values.title };
     const formData = modifyData({ ...specialtyData, file: values.file });
 
     try {
       const res = await createSpecialitis(formData).unwrap();
-      if (res?.data?.id) {
-        toast.success("Specialists Created Successfully");
+      if (res?.id) {
+        toast.success("Specialty created successfully");
         setOpen(false);
       }
     } catch (error: any) {
-      console.error("API Error:", error);
       toast.error(
-        "Failed to create specialist: " + (error.message || "Unknown error")
+        error?.data?.message || "Failed to create specialty. Please try again."
       );
     }
   };
 
   return (
-    <PHModal open={open} setOpen={setOpen} title="Create a A New Speacialists">
-      <PHForm onSubmit={handleSubmit} defaultValues={{ title: "", icon: "" }}>
-        <Grid container spacing={2}>
-          <Grid size={{ md: 6 }}>
-            <InputForm fullWidth={false} name="title" label="Title" />
+    <PHModal open={open} setOpen={setOpen} title="Create a New Specialty">
+      <PHForm onSubmit={handleSubmit} defaultValues={{ title: "", file: "" }}>
+        <Stack spacing={3}>
+          <Typography variant="body2" color="text.secondary">
+            Provide the specialty title and an icon that represents it. Icons
+            help patients quickly identify the medical category.
+          </Typography>
+
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12 }}>
+              <InputForm
+                fullWidth
+                name="title"
+                label="Specialty Title"
+                required
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <PHFileUpload name="file" label="Upload Icon" />
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: "block", mt: 0.75 }}
+              >
+                Supported formats: PNG, JPG, SVG. Max size 2MB.
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid size={{ md: 6 }}>
-            <PHFileUpload name="file" label="Upload File" />
-          </Grid>
-          <Button sx={{ mt: 1 }} type="submit">
-            Create
-          </Button>
-        </Grid>
+
+          <Box>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              loading={isLoading}
+              sx={{
+                borderRadius: 2,
+                textTransform: "none",
+                px: 4,
+                py: 1.25,
+              }}
+            >
+              Create Specialty
+            </LoadingButton>
+          </Box>
+        </Stack>
       </PHForm>
     </PHModal>
   );

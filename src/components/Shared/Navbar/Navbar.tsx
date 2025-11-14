@@ -30,7 +30,7 @@ const Navbar = () => {
 
   const navItems = [
     { label: "All Doctors", href: "/doctors" },
-    { label: "Health Plans", href: "/consultation" },
+    { label: "Health Plans", href: "/subscription-plan" },
     { label: "Medicine", href: "/consultation" },
     { label: "Diagnostics", href: "/consultation" },
     { label: "Contact us", href: "/contact-us" },

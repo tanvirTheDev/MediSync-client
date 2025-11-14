@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Chip,
@@ -18,7 +17,7 @@ type TSpecilistiesProps = {
   icon: string;
 };
 
-const Specialists = async () => {
+const AllSpecialitiesPage = async () => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_API}/api/v1/specialities`,
     {
@@ -35,6 +34,7 @@ const Specialists = async () => {
         py: { xs: 8, md: 12, lg: 16 },
         background:
           "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(21,134,253,0.04) 100%)",
+        minHeight: "100vh",
       }}
     >
       <Container maxWidth="xl">
@@ -42,13 +42,13 @@ const Specialists = async () => {
           {/* Header Section */}
           <Stack spacing={2} alignItems="center" textAlign="center">
             <Chip
-              label="Medical Specialties"
+              label="All Medical Specialties"
               color="primary"
               variant="outlined"
               sx={{ borderRadius: "999px", fontWeight: 600 }}
             />
             <Typography
-              component="h2"
+              component="h1"
               sx={{
                 fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
                 fontWeight: 700,
@@ -56,7 +56,7 @@ const Specialists = async () => {
                 color: "text.primary",
               }}
             >
-              Explore Treatment Across Specialists
+              All Medical Specialists
             </Typography>
             <Typography
               sx={{
@@ -66,14 +66,15 @@ const Specialists = async () => {
                 lineHeight: 1.7,
               }}
             >
-              Find experienced doctors across all specialties. Click on any
-              specialty to view available healthcare providers in that field.
+              Explore all available medical specialties and find the right
+              doctor for your needs. Click on any specialty to view available
+              healthcare providers.
             </Typography>
           </Stack>
 
           {/* Specialists Grid */}
           <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
-            {specialists?.slice(0, 6).map((specialist: TSpecilistiesProps) => (
+            {specialists?.map((specialist: TSpecilistiesProps) => (
               <Grid key={specialist.id} item xs={6} sm={4} md={3} lg={2}>
                 <Link
                   href={`/specialities/${specialist.id}`}
@@ -117,6 +118,8 @@ const Specialists = async () => {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
+                          bgcolor: "primary.light",
+                          borderRadius: 2,
                           p: 1,
                         }}
                       >
@@ -153,28 +156,10 @@ const Specialists = async () => {
               </Grid>
             ))}
           </Grid>
-
-          {/* View All Button */}
-          <Box sx={{ textAlign: "center", mt: { xs: 2, md: 4 } }}>
-            <Link href="/specialities">
-              <Button
-                variant="outlined"
-                sx={{
-                  textTransform: "none",
-                  borderRadius: 999,
-                  fontSize: { xs: "0.95rem", md: "1rem" },
-                  px: { xs: 3.5, md: 4.5 },
-                  py: { xs: 1.25, md: 1.5 },
-                }}
-              >
-                View All Specialties
-              </Button>
-            </Link>
-          </Box>
         </Stack>
       </Container>
     </Box>
   );
 };
 
-export default Specialists;
+export default AllSpecialitiesPage;

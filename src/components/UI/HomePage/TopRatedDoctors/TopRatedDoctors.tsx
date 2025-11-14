@@ -1,4 +1,12 @@
-import { Box, Button, Container } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Container,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Link from "next/link";
 import DoctorCard from "./DoctorCard";
 
@@ -12,64 +20,76 @@ const TopRatedDoctors = async () => {
   return (
     <Box
       sx={{
-        py: { xs: 8, md: 12, lg: 16, xl: 20 },
-        backgroundColor: "rgba(20,20,20, 0.1)",
-        clipPath: {
-          xs: "none",
-          lg: "polygon(0 0, 100% 15%, 100% 100%, 0 85%)",
-        },
+        py: { xs: 8, md: 12, lg: 16 },
+        background:
+          "linear-gradient(180deg, rgba(21,134,253,0.06) 0%, rgba(21,134,253,0.02) 100%)",
       }}
     >
-      <Container>
-        <Box sx={{ py: { xs: 3, md: 4, lg: 5 } }}>
-          <Box sx={{ textAlign: "center", px: 2 }}>
-            <Box
+      <Container maxWidth="xl">
+        <Stack spacing={{ xs: 4, md: 6 }}>
+          <Stack
+            spacing={2}
+            alignItems="center"
+            textAlign="center"
+            sx={{ px: { xs: 2, md: 6 } }}
+          >
+            <Chip
+              label="Meet Our Experts"
+              color="primary"
+              variant="outlined"
+              sx={{ borderRadius: "999px", fontWeight: 600 }}
+            />
+            <Typography
               component="h2"
               sx={{
-                fontSize: { xs: "1.5rem", md: "1.875rem", lg: "2.25rem" },
+                fontSize: { xs: "1.75rem", md: "2.25rem", lg: "2.75rem" },
                 fontWeight: 700,
-                mb: 2,
+                letterSpacing: "-0.01em",
               }}
             >
               Our Top Rated Doctors
-            </Box>
-            <Box
+            </Typography>
+            <Typography
               component="p"
               sx={{
-                fontSize: { xs: "0.875rem", md: "1rem", lg: "1.125rem" },
+                fontSize: { xs: "0.95rem", md: "1.05rem", lg: "1.15rem" },
                 color: "text.secondary",
-                maxWidth: "800px",
-                mx: "auto",
-                lineHeight: 1.6,
+                maxWidth: "760px",
+                lineHeight: 1.7,
               }}
             >
-              Access to expert physicians and surgeons, advanced technologies
-              and top-quality surgery facilities right here.
-            </Box>
-          </Box>
-          <Box sx={{ mt: { xs: 4, md: 6, lg: 8 } }}>
+              Access board-certified specialists, advanced treatment plans, and
+              seamless care coordination designed to keep every patient on the
+              right path to better health.
+            </Typography>
+          </Stack>
+
+          <Grid container spacing={{ xs: 3, md: 4 }}>
             {doctorsData?.map((doctor: any) => (
-              <DoctorCard key={doctor.id} doctor={doctor} />
+              <Grid key={doctor.id} item xs={12} sm={6} lg={3}>
+                <DoctorCard doctor={doctor} />
+              </Grid>
             ))}
+          </Grid>
+
+          <Box sx={{ textAlign: "center", mt: { xs: 2, md: 4 } }}>
+            <Link href="/doctors">
+              <Button
+                variant="outlined"
+                sx={{
+                  textTransform: "none",
+                  borderRadius: 999,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
+                  px: { xs: 3.5, md: 4.5 },
+                  py: { xs: 1.25, md: 1.5 },
+                }}
+              >
+                View All Doctors
+              </Button>
+            </Link>
           </Box>
-        </Box>
+        </Stack>
       </Container>
-      <Box sx={{ textAlign: "center", mt: { xs: 4, md: 6 } }}>
-        <Link href="/doctors">
-          <Button
-            variant="outlined"
-            sx={{
-              textTransform: "none",
-              borderRadius: 2,
-              fontSize: { xs: "0.875rem", md: "1rem" },
-              px: { xs: 3, md: 4 },
-              py: { xs: 1, md: 1.5 },
-            }}
-          >
-            View All Doctors
-          </Button>
-        </Link>
-      </Box>
     </Box>
   );
 };

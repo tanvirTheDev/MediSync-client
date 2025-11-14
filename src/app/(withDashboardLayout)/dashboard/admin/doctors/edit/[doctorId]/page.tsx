@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-async-client-component */
 "use client";
+
 import InputForm from "@/components/Form/InputForm";
 import PHFileUploader from "@/components/Form/PHFileUpload";
 import PHForm from "@/components/Form/PHForm";
@@ -11,68 +12,86 @@ import {
   useUpdateDoctorMutation,
 } from "@/redux/api/doctorsApi";
 import { useGetSpecialistsQuery } from "@/redux/api/specialistsApi";
-import { Box, Button, Stack } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { TDoctorSpeciality } from "@/types/doctor";
+import { LoadingButton } from "@mui/lab";
+import { Box, Divider, Grid, Stack, Typography, alpha } from "@mui/material";
 import Image from "next/image";
-import React from "react";
+import { useRouter } from "next/navigation";
+import { use, useMemo } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import DoctorUpdateSkeleton from "./DoctorUpdateSkelton";
-// Define the structure of PageProps for this page
 
-const DoctorUpdatePage = ({ params }: any) => {
-  const { doctorId } = React.use(params) as any;
-  const { data: specialitiesData } = useGetSpecialistsQuery(undefined);
-  // Use the skip option to prevent the query from running if doctorId is null
+const DoctorUpdatePage = ({
+  params,
+}: {
+  params: Promise<{ doctorId: string }>;
+}) => {
+  const router = useRouter();
+  const { doctorId } = use(params as Promise<{ doctorId: string }>);
+  const { data: specialtiesData } = useGetSpecialistsQuery(undefined);
+
   const { data, isLoading } = useGetSingleDoctorQuery(doctorId || "", {
-    skip: !doctorId, // Skip the query if doctorId is not available
+    skip: !doctorId,
   });
-  console.log(data?.id);
 
-  const [updateDoctor] = useUpdateDoctorMutation();
+  const [updateDoctor, { isLoading: updating }] = useUpdateDoctorMutation();
+
+  const defaultValues = useMemo(
+    () => ({
+      name: data?.name || "",
+      contactNumber: data?.contactNumber || "",
+      address: data?.address || "",
+      registrationNumber: data?.registrationNumber || "",
+      experience: data?.experience || 0,
+      gender: (data?.gender as "MALE" | "FEMALE" | "OTHER") || "MALE",
+      appointmentFee: data?.appointmentFee || 0,
+      qualification: data?.qualification || "",
+      currentWorkingPlace: data?.currentWorkingPlace || "",
+      designation: data?.designation || "",
+      specialties:
+        data?.doctorSpecialities?.map(
+          (speciality: TDoctorSpeciality) => speciality.specialities?.id
+        ) || [],
+    }),
+    [data]
+  );
+
+  const specialtyOptions = useMemo(
+    () =>
+      specialtiesData?.map((item) => ({
+        value: item.id,
+        label: item.title,
+      })) || [],
+    [specialtiesData]
+  );
 
   const handleSubmit = async (values: FieldValues) => {
-    values.experience = Number(values.experience);
-    values.apointmentFee = Number(values.apointmentFee);
-    values.id = doctorId;
-
-    // Transform specialties to the backend format
-    if (values.specialties) {
-      values.specialties = values.specialties.map((specialtyId: string) => ({
-        specialtiesId: specialtyId,
+    const formattedSpecialties =
+      (values.specialties || []).map((id: string) => ({
+        specialtiesId: id,
         isDeleted: false,
-      }));
-    }
+      })) || [];
 
-    console.log(values);
-    console.log({ id: doctorId, body: values });
+    console.log("formattedSpecialties", formattedSpecialties);
+
+    const payload = {
+      ...values,
+      experience: Number(values.experience),
+      appointmentFee: Number(values.appointmentFee),
+      specialties: formattedSpecialties,
+    };
 
     try {
-      const res = await updateDoctor({ id: doctorId, body: values }).unwrap();
-      console.log(res);
-      if (res?.id) {
-        toast.success("Doctor Updated Successfully");
+      const res = await updateDoctor({ id: doctorId, body: payload }).unwrap();
+      console.log("res", res);
+      if (res?.data?.id) {
+        toast.success("Doctor profile updated successfully");
+        router.push(`/dashboard/admin/doctors`);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to update doctor");
     }
-  };
-  const defaultValues = {
-    name: data?.name || "",
-    email: data?.email || "",
-    contactNumber: data?.contactNumber || 0,
-    address: data?.address || "",
-    registrationNumber: data?.registrationNumber || "",
-    experience: data?.experience || 0,
-    gender: data?.gender || "",
-    apointmentFee: data?.apointmentFee || 0,
-    qualification: data?.qualification || "",
-    currentWorkingPlace: data?.currentWorkingPlace || "",
-    designation: data?.designation || "",
-    specialties:
-      data?.doctorSpecialties?.map(
-        (specialty: any) => specialty.specialtiesId
-      ) || [],
   };
 
   return (
@@ -80,115 +99,145 @@ const DoctorUpdatePage = ({ params }: any) => {
       {isLoading ? (
         <DoctorUpdateSkeleton />
       ) : (
-        <PHForm onSubmit={handleSubmit} defaultValues={data && defaultValues}>
-          <Box>
-            <Stack spacing={4}>
-              <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Box sx={{ height: "150px", width: "150px" }}>
-                  <Image
-                    src={data?.profilePhoto || "/placeholder-image.png"}
-                    alt="Profile Photo"
-                    width={150}
-                    height={150}
-                  />
-                </Box>
-                <PHFileUploader name="file" label="Upload Doctor Image" />
+        <PHForm onSubmit={handleSubmit} defaultValues={defaultValues}>
+          <Stack spacing={4}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                alignItems: "center",
+                gap: 3,
+                p: 3,
+                borderRadius: 3,
+                border: "1px solid",
+                borderColor: "divider",
+                bgcolor: alpha("#1586FD", 0.03),
+              }}
+            >
+              <Box
+                sx={{
+                  height: 160,
+                  width: 160,
+                  borderRadius: 3,
+                  overflow: "hidden",
+                  bgcolor: "grey.100",
+                }}
+              >
+                <Image
+                  src={data?.profilePhoto || ""}
+                  alt="Doctor profile"
+                  width={160}
+                  height={160}
+                />
               </Box>
-              {/* grid - 1 */}
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 4 }}>
-                  <InputForm fullWidth name="name" label="Name" />
-                </Grid>
-                <Grid size={{ xs: 4 }}>
-                  <InputForm
-                    fullWidth
-                    name="email"
-                    label="Email"
-                    type="email"
-                  />
-                </Grid>
-                <Grid size={{ xs: 4 }}>
-                  <InputForm
-                    fullWidth
-                    name="contactNumber"
-                    label="Contact Number"
-                  />
-                </Grid>
+              <Stack spacing={1.5}>
+                <Typography variant="subtitle1" fontWeight={600}>
+                  Profile Photo
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Upload a professional photo to keep the doctor profile
+                  current.
+                </Typography>
+                <PHFileUploader name="file" label="Upload new photo" />
+              </Stack>
+            </Box>
+
+            <Grid container spacing={2.5}>
+              <Grid item xs={12} md={4}>
+                <InputForm name="name" label="Full Name" fullWidth />
               </Grid>
-              {/* grid - 2  */}
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 4 }}>
-                  <InputForm fullWidth name="address" label="Address" />
-                </Grid>
-                <Grid size={{ xs: 4 }}>
-                  <InputForm
-                    fullWidth
-                    name="registrationNumber"
-                    label="Registration Number"
-                  />
-                </Grid>
-                <Grid size={{ xs: 4 }}>
-                  <InputForm fullWidth name="experience" label="Experience" />
-                </Grid>
+              <Grid item xs={12} md={4}>
+                <InputForm
+                  name="contactNumber"
+                  label="Contact Number"
+                  fullWidth
+                />
               </Grid>
-              {/* grid - 3  */}
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 4 }}>
-                  <SelectField
-                    name="gender"
-                    label="Gender"
-                    size="small"
-                    options={[
-                      { value: "MALE", label: "MALE" },
-                      { value: "FEMALE", label: "FEMALE" },
-                      { value: "OTHERS", label: "OTHERS" },
-                    ]}
-                  />
-                </Grid>
-                <Grid size={{ xs: 4 }}>
-                  <InputForm
-                    fullWidth
-                    name="apointmentFee"
-                    label="Appointment Fee"
-                  />
-                </Grid>
-                <Grid size={{ xs: 4 }}>
-                  <InputForm
-                    fullWidth
-                    name="qualification"
-                    label="Qualification"
-                  />
-                </Grid>
+              <Grid item xs={12} md={4}>
+                <InputForm name="address" label="Address" fullWidth />
               </Grid>
-              {/* grid - 4  */}
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 4 }}>
-                  <InputForm
-                    fullWidth
-                    name="currentWorkingPlace"
-                    label="Currernt Working Place"
-                  />
-                </Grid>
-                <Grid size={{ xs: 4 }}>
-                  <InputForm fullWidth name="designation" label="Designation" />
-                </Grid>
+
+              <Grid item xs={12} md={4}>
+                <InputForm
+                  name="registrationNumber"
+                  label="Registration Number"
+                  fullWidth
+                />
               </Grid>
-              <Grid size={{ xs: 4 }}>
+              <Grid item xs={12} md={4}>
+                <InputForm
+                  name="experience"
+                  label="Years of Experience"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <SelectField
+                  name="gender"
+                  label="Gender"
+                  size="small"
+                  options={[
+                    { value: "MALE", label: "Male" },
+                    { value: "FEMALE", label: "Female" },
+                    { value: "OTHER", label: "Other" },
+                  ]}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={4}>
+                <InputForm
+                  name="appointmentFee"
+                  label="Appointment Fee (৳)"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <InputForm
+                  name="qualification"
+                  label="Qualification"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <InputForm
+                  name="currentWorkingPlace"
+                  label="Current Workplace"
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={12} md={4}>
+                <InputForm name="designation" label="Designation" fullWidth />
+              </Grid>
+              <Grid item xs={12}>
                 <MultiChipField
                   name="specialties"
                   label="Select Specialties"
-                  options={
-                    specialitiesData?.map((item) => ({
-                      value: item.id,
-                      label: item.title,
-                    })) || []
-                  }
+                  options={specialtyOptions}
                   size="medium"
                 />
               </Grid>
-              <Button type="submit">Submit</Button>
+            </Grid>
+
+            <Divider />
+
+            <Stack direction="row" justifyContent="flex-end">
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                loading={updating}
+                sx={{
+                  textTransform: "none",
+                  borderRadius: 3,
+                  px: 4,
+                  py: 1.3,
+                  fontWeight: 600,
+                }}
+              >
+                Save Changes
+              </LoadingButton>
             </Stack>
-          </Box>
+          </Stack>
         </PHForm>
       )}
     </Box>

@@ -27,7 +27,7 @@ const validationSchema = z.object({
     (x) => (x ? x : undefined),
     z.coerce.number().int().optional()
   ),
-  apointmentFee: z.preprocess(
+  appointmentFee: z.preprocess(
     (x) => (x ? x : undefined),
     z.coerce.number().int().optional()
   ),
@@ -43,8 +43,8 @@ const validationSchema = z.object({
 const UpdateDoctorProfile = ({ open, setOpen, id }: TPropsWithId) => {
   const router = useRouter();
   const { data, refetch } = useGetSingleDoctorQuery(id);
-  const { data: allSpecialties } = useGetSpecialistsQuery(undefined);
-  const [selectedSpecialtiesIds, setSelectedSpecialtiesIds] = useState([]);
+  const { data: allSpecialities } = useGetSpecialistsQuery(undefined);
+  const [selectedSpecialitiesIds, setSelectedSpecialitiesIds] = useState([]);
 
   const [updateDoctor] = useUpdateDoctorMutation();
 
@@ -61,29 +61,12 @@ const UpdateDoctorProfile = ({ open, setOpen, id }: TPropsWithId) => {
   const onSubmit = async (values: FieldValues) => {
     console.log(values);
 
-    const specialties = selectedSpecialtiesIds.map((specialtiesId: string) => ({
-      specialtiesId,
-      isDeleted: false,
-    }));
-    // console.log({ id });
-    // return;
-
-    // const excludedFields: Array<keyof typeof values> = [
-    //   "email",
-    //   "id",
-    //   "role",
-    //   "needPasswordChange",
-    //   "status",
-    //   "createdAt",
-    //   "updatedAt",
-    //   "isDeleted",
-    //   "averageRating",
-    //   "review",
-    //   "profilePhoto",
-    //   "registrationNumber",
-    //   "schedules",
-    //   "doctorSpecialties",
-    // ];
+    const specialities = selectedSpecialitiesIds.map(
+      (specialitiesId: string) => ({
+        specialitiesId: specialitiesId,
+        isDeleted: false,
+      })
+    );
 
     // const updatedValues = Object.fromEntries(
     //   Object.entries(values).filter(([key]) => {
@@ -95,7 +78,7 @@ const UpdateDoctorProfile = ({ open, setOpen, id }: TPropsWithId) => {
 
     // updatedValues.doctorSpecialties = doctorSpecialties;
     // console.log(updatedValues);
-    values.specialties = specialties;
+    values.specialities = specialities;
     console.log(values);
 
     try {
@@ -116,12 +99,12 @@ const UpdateDoctorProfile = ({ open, setOpen, id }: TPropsWithId) => {
     contactNumber: data?.contactNumber,
     registrationNumber: data?.registrationNumber,
     experience: data?.experience || "",
-    apointmentFee: data?.apointmentFee,
+    appointmentFee: data?.appointmentFee,
     gender: data?.gender,
     qualification: data?.qualification,
     currentWorkingPlace: data?.currentWorkingPlace,
     designation: data?.designation,
-    doctorSpecialties: data?.doctorSpecialties || [],
+    doctorSpecialities: data?.doctorSpecialities || [],
   };
   return (
     <FullScreenModal
@@ -185,7 +168,7 @@ const UpdateDoctorProfile = ({ open, setOpen, id }: TPropsWithId) => {
               <Grid size={{ xs: 4 }}>
                 <InputForm
                   fullWidth
-                  name="apointmentFee"
+                  name="appointmentFee"
                   label="Appointment Fee"
                 />
               </Grid>
@@ -212,9 +195,9 @@ const UpdateDoctorProfile = ({ open, setOpen, id }: TPropsWithId) => {
 
               <Grid size={{ xs: 4 }}>
                 <MultipleSelectChip
-                  allSpecialties={allSpecialties}
-                  selectedIds={selectedSpecialtiesIds}
-                  setSelectedIds={setSelectedSpecialtiesIds}
+                  allSpecialities={allSpecialities}
+                  selectedIds={selectedSpecialitiesIds}
+                  setSelectedIds={setSelectedSpecialitiesIds}
                 />
               </Grid>
             </Grid>

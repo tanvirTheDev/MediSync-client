@@ -1,19 +1,16 @@
-import { Box, Chip, Container, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  Container,
+  Divider,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import DoctorsScheduleSlots from "../comoponents/DoctorsScheduleSlots";
-
-const InfoBoxStyles = {
-  background:
-    "linear-gradient(to bottom, rgba(21,134,253,0.3), rgba(255,255,255,1) 100%)",
-  width: "100%",
-  p: 3,
-  "& h6": {
-    color: "primary.main",
-  },
-  "& p": {
-    color: "secondary.main",
-  },
-};
 
 const Page = async ({ params }: any) => {
   const { id } = await params;
@@ -22,136 +19,343 @@ const Page = async ({ params }: any) => {
   );
   const { data: doctor } = await res.json();
 
-  const specialties = doctor.doctorSpecialties.map(
-    (ds: any) => ds.specialties.title
-  );
+  const specialties =
+    doctor.doctorSpecialities?.map((ds: any) => ds.specialities.title) || [];
   const photo =
-    "https://static.vecteezy.com/system/resources/thumbnails/026/489/224/small_2x/muslim-malay-woman-doctor-in-hospital-with-copy-space-ai-generated-photo.jpg";
+    "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=400&auto=format&fit=crop";
+
   return (
-    <Container>
-      <Box my={5}>
-        <Typography variant="h4" fontWeight={700} textAlign="center">
-          Doctor&apos;s Profile Details
-        </Typography>
-        <Typography
-          textAlign="center"
-          mt={2}
-          sx={{ width: "70%", margin: "10px auto" }}
-          variant="h6"
-        >
-          Compassionate and dedicated doctor committed to delivering
-          high-quality care. Proficient in diagnosis, treatment, and advocating
-          for comprehensive well-being. Prioritizing patient-centered approaches
-          for optimal health outcomes.
-        </Typography>
-      </Box>
-
-      <Box>
-        <Box sx={{ my: 10, p: 3, bgcolor: "#f8f8f8" }}>
-          <Stack sx={{ bgcolor: "white", p: 3 }}>
-            <Stack direction="row" gap={3}>
-              <Box sx={{ width: 281, height: 281, bgcolor: "#808080" }}>
-                <Image
-                  src={doctor?.profilePhoto || photo}
-                  alt="doctor image"
-                  width={281}
-                  height={281}
-                  priority
-                  style={{
-                    height: "281px",
-                  }}
-                />
-              </Box>
-              <Stack flex={1}>
-                <Box>
-                  <Typography variant="h6" fontWeight={600}>
-                    {doctor?.name}
-                  </Typography>
-                  <Typography sx={{ my: "2px", color: "secondary.main" }}>
-                    {doctor?.designation}
-                  </Typography>
-                  <Stack direction="row" alignItems="center" gap={2} mt={1}>
-                    <Typography
-                      noWrap
-                      sx={{
-                        maxWidth: "45ch",
-                      }}
-                    >
-                      Specialties in
-                    </Typography>
-                    <Box>
-                      {specialties.map((sp: any) => (
-                        <Chip
-                          key={sp}
-                          label={sp}
-                          color="primary"
-                          sx={{ mr: 1 }}
-                        />
-                      ))}
-                    </Box>
-                  </Stack>
-                </Box>
-
-                <Box>
-                  <Typography sx={{ my: "2px" }}>Working at</Typography>
-                  <Typography>{doctor?.currentWorkingPlace}</Typography>
-                </Box>
-
-                <Box>
-                  <Stack direction="row">
-                    <Typography
-                      fontWeight={"bold"}
-                      // fontSize={20}
-                      sx={{
-                        color: "#141414",
-                      }}
-                    >
-                      Consultation Fee
-                    </Typography>
-                    <Stack
-                      sx={{
-                        ml: 2,
-                      }}
-                    >
-                      <Typography>
-                        Taka : {doctor?.apointmentFee} (incl. Vat)
-                      </Typography>
-                      <Typography>Per consultation</Typography>
-                    </Stack>
-                  </Stack>
-                </Box>
-              </Stack>
-            </Stack>
-            <Stack
-              direction={"row"}
-              gap={3}
-              justifyContent={"space-between"}
+    <Box
+      sx={{
+        py: { xs: 4, md: 6, lg: 8 },
+        background:
+          "linear-gradient(180deg, rgba(21,134,253,0.04) 0%, rgba(255,255,255,1) 100%)",
+        minHeight: "100vh",
+      }}
+    >
+      <Container maxWidth="xl">
+        <Stack spacing={{ xs: 4, md: 6 }}>
+          {/* Header Section */}
+          <Stack spacing={2} alignItems="center" textAlign="center">
+            <Chip
+              label="Doctor Profile"
+              color="primary"
+              variant="outlined"
+              sx={{ borderRadius: "999px", fontWeight: 600 }}
+            />
+            <Typography
+              variant="h3"
+              component="h1"
               sx={{
-                my: 4,
+                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
               }}
             >
-              <Box sx={InfoBoxStyles}>
-                <Typography variant="h6">Total Experience</Typography>
-                <Typography>{doctor?.experience}+ Years</Typography>
-              </Box>
-              <Box sx={InfoBoxStyles}>
-                <Typography variant="h6">Qualification</Typography>
-                <Typography>{doctor?.qualification}</Typography>
-              </Box>
-              <Box sx={InfoBoxStyles}>
-                <Typography variant="h6">Average Rating</Typography>
-                <Typography>{doctor?.averageRating}</Typography>
-              </Box>
-              <Box sx={InfoBoxStyles}>
-                <Typography variant="h6">Contact Number</Typography>
-                <Typography>{doctor?.contactNumber}</Typography>
-              </Box>
-            </Stack>
+              Meet Your Healthcare Provider
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: "0.95rem", md: "1.05rem" },
+                color: "text.secondary",
+                maxWidth: "700px",
+                lineHeight: 1.7,
+              }}
+            >
+              Compassionate and dedicated professional committed to delivering
+              high-quality care through evidence-based diagnosis, personalized
+              treatment, and patient-centered approaches.
+            </Typography>
           </Stack>
-        </Box>
-      </Box>
-      <DoctorsScheduleSlots id={doctor.id} />
-    </Container>
+
+          {/* Main Doctor Info Card */}
+          <Card
+            elevation={0}
+            sx={{
+              borderRadius: 4,
+              border: "1px solid",
+              borderColor: "divider",
+              boxShadow:
+                "0 12px 35px rgba(21,134,253,0.08), 0 4px 18px rgba(8,17,52,0.04)",
+              overflow: "hidden",
+            }}
+          >
+            <CardContent sx={{ p: { xs: 3, md: 4, lg: 5 } }}>
+              <Stack
+                direction={{ xs: "column", md: "row" }}
+                spacing={{ xs: 3, md: 4 }}
+              >
+                {/* Doctor Image */}
+                <Box
+                  sx={{
+                    width: { xs: "100%", md: 280 },
+                    height: { xs: 300, md: 280 },
+                    borderRadius: 3,
+                    overflow: "hidden",
+                    flexShrink: 0,
+                    position: "relative",
+                    bgcolor: "grey.100",
+                  }}
+                >
+                  <Image
+                    src={doctor?.profilePhoto || photo}
+                    alt={doctor?.name || "Doctor"}
+                    fill
+                    sizes="(max-width: 600px) 100vw, 280px"
+                    style={{ objectFit: "cover" }}
+                    priority
+                  />
+                </Box>
+
+                {/* Doctor Details */}
+                <Stack flex={1} spacing={3}>
+                  <Box>
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        fontWeight: 700,
+                        fontSize: { xs: "1.5rem", md: "2rem" },
+                        mb: 0.5,
+                        letterSpacing: "-0.01em",
+                      }}
+                    >
+                      {doctor?.name}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "secondary.main",
+                        fontSize: { xs: "1rem", md: "1.125rem" },
+                        mb: 2,
+                      }}
+                    >
+                      {doctor?.designation}
+                    </Typography>
+
+                    {specialties.length > 0 && (
+                      <Stack direction="row" flexWrap="wrap" gap={1}>
+                        {specialties.map((sp: string) => (
+                          <Chip
+                            key={sp}
+                            label={sp}
+                            color="primary"
+                            variant="outlined"
+                            sx={{ borderRadius: 2, fontWeight: 500 }}
+                          />
+                        ))}
+                      </Stack>
+                    )}
+                  </Box>
+
+                  <Divider />
+
+                  <Stack spacing={2}>
+                    {doctor?.currentWorkingPlace && (
+                      <Box>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "text.secondary",
+                            fontSize: { xs: "0.875rem", md: "0.95rem" },
+                            mb: 0.5,
+                          }}
+                        >
+                          Working at
+                        </Typography>
+                        <Typography
+                          sx={{
+                            fontWeight: 600,
+                            fontSize: { xs: "1rem", md: "1.125rem" },
+                          }}
+                        >
+                          {doctor.currentWorkingPlace}
+                        </Typography>
+                      </Box>
+                    )}
+
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "text.secondary",
+                          fontSize: { xs: "0.875rem", md: "0.95rem" },
+                          mb: 0.5,
+                        }}
+                      >
+                        Consultation Fee
+                      </Typography>
+                      <Stack direction="row" alignItems="baseline" spacing={1}>
+                        <Typography
+                          sx={{
+                            color: "primary.main",
+                            fontWeight: 700,
+                            fontSize: { xs: "1.25rem", md: "1.5rem" },
+                          }}
+                        >
+                          ৳ {doctor?.apointmentFee || doctor?.appointmentFee}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "text.secondary" }}
+                        >
+                          (incl. VAT) · Per consultation
+                        </Typography>
+                      </Stack>
+                    </Box>
+                  </Stack>
+                </Stack>
+              </Stack>
+            </CardContent>
+          </Card>
+
+          {/* Stats Grid */}
+          <Grid container spacing={{ xs: 2, md: 3 }}>
+            <Grid item xs={6} sm={3}>
+              <Card
+                elevation={0}
+                sx={{
+                  borderRadius: 3,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  background:
+                    "linear-gradient(135deg, rgba(21,134,253,0.08) 0%, rgba(21,134,253,0.02) 100%)",
+                  p: 2.5,
+                  textAlign: "center",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 700,
+                    fontSize: { xs: "1.25rem", md: "1.5rem" },
+                    mb: 0.5,
+                  }}
+                >
+                  {doctor?.experience}+
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    fontSize: { xs: "0.875rem", md: "0.95rem" },
+                  }}
+                >
+                  Years Experience
+                </Typography>
+              </Card>
+            </Grid>
+            <Grid item xs={6} sm={3}>
+              <Card
+                elevation={0}
+                sx={{
+                  borderRadius: 3,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  background:
+                    "linear-gradient(135deg, rgba(21,134,253,0.08) 0%, rgba(21,134,253,0.02) 100%)",
+                  p: 2.5,
+                  textAlign: "center",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 700,
+                    fontSize: { xs: "1.25rem", md: "1.5rem" },
+                    mb: 0.5,
+                  }}
+                >
+                  {doctor?.qualification || "N/A"}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    fontSize: { xs: "0.875rem", md: "0.95rem" },
+                  }}
+                >
+                  Qualification
+                </Typography>
+              </Card>
+            </Grid>
+            <Grid item xs={6} sm={3}>
+              <Card
+                elevation={0}
+                sx={{
+                  borderRadius: 3,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  background:
+                    "linear-gradient(135deg, rgba(21,134,253,0.08) 0%, rgba(21,134,253,0.02) 100%)",
+                  p: 2.5,
+                  textAlign: "center",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 700,
+                    fontSize: { xs: "1.25rem", md: "1.5rem" },
+                    mb: 0.5,
+                  }}
+                >
+                  {doctor?.averageRating || "N/A"}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    fontSize: { xs: "0.875rem", md: "0.95rem" },
+                  }}
+                >
+                  Average Rating
+                </Typography>
+              </Card>
+            </Grid>
+            <Grid item xs={6} sm={3}>
+              <Card
+                elevation={0}
+                sx={{
+                  borderRadius: 3,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  background:
+                    "linear-gradient(135deg, rgba(21,134,253,0.08) 0%, rgba(21,134,253,0.02) 100%)",
+                  p: 2.5,
+                  textAlign: "center",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 700,
+                    fontSize: { xs: "1.25rem", md: "1.5rem" },
+                    mb: 0.5,
+                  }}
+                >
+                  {doctor?.contactNumber || "N/A"}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    fontSize: { xs: "0.875rem", md: "0.95rem" },
+                  }}
+                >
+                  Contact Number
+                </Typography>
+              </Card>
+            </Grid>
+          </Grid>
+
+          {/* Schedule Slots */}
+          <DoctorsScheduleSlots id={doctor.id} />
+        </Stack>
+      </Container>
+    </Box>
   );
 };
 

@@ -1,8 +1,20 @@
 import { TMeta } from "../common";
 
+export type TSpeciality = {
+  id: string;
+  title: string;
+  icon: string;
+};
+
+export type TDoctorSpeciality = {
+  specialitiesId: string;
+  doctorId?: string;
+  isDeleted?: boolean; // optional, if it’s not always returned
+  specialities?: TSpeciality;
+};
+
 export type TDoctor = {
   id: string;
-  role: string;
   email: string;
   name: string;
   profilePhoto: string | null;
@@ -11,17 +23,14 @@ export type TDoctor = {
   registrationNumber: string;
   experience: number;
   gender: "MALE" | "FEMALE" | "OTHER";
-  apointmentFee: number;
+  appointmentFee: number;
   qualification: string;
   currentWorkingPlace: string;
   designation: string;
-  isDeleted: boolean;
+  isDeleted: boolean | string; // still safe because backend sends "false"
   createdAt: string;
   updatedAt: string;
-  averageRating: number;
-  status: "Active" | "Inactive";
-  review: any[]; // Adjust type based on the review structure, e.g., `Review[]` if reviews are objects
-  doctorSpecialties: any[]; // Adjust type if specialties have a specific structure
+  doctorSpecialities: TDoctorSpeciality[];
 };
 
 export type DoctorsResponse = {

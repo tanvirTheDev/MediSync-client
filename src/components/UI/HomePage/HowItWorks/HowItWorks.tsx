@@ -1,274 +1,196 @@
-import { Box, Container, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import {
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  Container,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
-import HowItworks from "../../../../assets/how-it-works-img.png";
 import appointment from "../../../../assets/icons/appointment-icon.png";
 import charity from "../../../../assets/icons/charity-icon.png";
 import checkDoctorProfile from "../../../../assets/icons/doctor-icon.png";
 import seachDoctor from "../../../../assets/icons/search-icon.png";
-const HowItWorks = () => {
-  return (
-    <Container maxWidth="xl">
-      <Box sx={{ py: { xs: 4, md: 6, lg: 8 }, px: { xs: 1, md: 2 } }}>
-        {/* heading */}
-        <Box sx={{ textAlign: "center", mb: { xs: 4, md: 6 } }}>
-          <Typography
-            variant="h6"
-            color="primary"
-            sx={{
-              fontSize: { xs: "1rem", md: "1.125rem" },
-              mb: 1,
-            }}
-          >
-            How it Works
-          </Typography>
-          <Typography
-            variant="h4"
-            fontWeight={700}
-            sx={{
-              fontSize: { xs: "1.75rem", sm: "2rem", md: "2.5rem", lg: "3rem" },
-              mb: 2,
-              lineHeight: 1.2,
-            }}
-          >
-            4 Easy Steps for get your solution
-          </Typography>
-          <Typography
-            variant="body1"
-            color="primary.body1"
-            sx={{
-              maxWidth: { xs: "100%", sm: "600px" },
-              mx: "auto",
-              fontSize: { xs: "0.875rem", md: "1rem" },
-              lineHeight: 1.6,
-            }}
-          >
-            Access to expert physicians and surgeons, advanced technologies and
-            top-quality surgery facilities right here.
-          </Typography>
-        </Box>
 
-        {/* main content */}
-        <Grid container spacing={{ xs: 3, md: 5 }} alignItems="center">
-          {/* Image Section */}
-          <Grid size={{ xs: 12, lg: 6 }}>
-            <Box
+const HowItWorks = () => {
+  const steps = [
+    {
+      number: "01",
+      icon: seachDoctor,
+      title: "Search Doctor",
+      description:
+        "Browse through our extensive network of qualified healthcare professionals. Filter by specialty, location, availability, and ratings to find the perfect match for your needs.",
+    },
+    {
+      number: "02",
+      icon: checkDoctorProfile,
+      title: "Check Doctor Profile",
+      description:
+        "Review detailed profiles including qualifications, experience, specialties, patient reviews, and consultation fees. Make an informed decision before booking your appointment.",
+    },
+    {
+      number: "03",
+      icon: appointment,
+      title: "Schedule Appointment",
+      description:
+        "Select your preferred date and time slot from the doctor's available schedule. Complete the booking process with secure payment and receive instant confirmation.",
+    },
+    {
+      number: "04",
+      icon: charity,
+      title: "Get Your Solution",
+      description:
+        "Attend your virtual or in-person consultation, receive expert medical advice, and get the care you need. Access your medical records and follow-up appointments all in one place.",
+    },
+  ];
+
+  return (
+    <Box
+      sx={{
+        py: { xs: 8, md: 12, lg: 16 },
+        background:
+          "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(21,134,253,0.04) 100%)",
+      }}
+    >
+      <Container maxWidth="xl">
+        <Stack spacing={{ xs: 4, md: 6 }}>
+          {/* Header Section */}
+          <Stack spacing={2} alignItems="center" textAlign="center">
+            <Chip
+              label="How It Works"
+              color="primary"
+              variant="outlined"
+              sx={{ borderRadius: "999px", fontWeight: 600 }}
+            />
+            <Typography
+              component="h2"
               sx={{
-                display: "flex",
-                justifyContent: "center",
-                mb: { xs: 3, lg: 0 },
+                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                color: "text.primary",
               }}
             >
-              <Image
-                src={HowItworks || "/default-Image"}
-                alt="How it works illustration"
-                style={{
-                  maxWidth: "100%",
-                  height: "auto",
-                }}
-              />
-            </Box>
+              4 Easy Steps to Get Your Solution
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: "0.95rem", md: "1.05rem", lg: "1.15rem" },
+                color: "text.secondary",
+                maxWidth: "700px",
+                lineHeight: 1.7,
+              }}
+            >
+              Access expert physicians and surgeons, advanced technologies, and
+              top-quality healthcare facilities through our streamlined booking
+              process.
+            </Typography>
+          </Stack>
+
+          {/* Steps Grid */}
+          <Grid container spacing={{ xs: 3, md: 4 }}>
+            {steps.map((step, index) => (
+              <Grid key={index} item xs={12} sm={6} md={3}>
+                <Card
+                  elevation={0}
+                  sx={{
+                    height: "100%",
+                    borderRadius: 3,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    boxShadow:
+                      "0 4px 20px rgba(21,134,253,0.08), 0 2px 8px rgba(8,17,52,0.04)",
+                    transition: "all 0.3s ease",
+                    position: "relative",
+                    overflow: "visible",
+                    "&:hover": {
+                      transform: "translateY(-6px)",
+                      boxShadow:
+                        "0 8px 30px rgba(21,134,253,0.15), 0 4px 12px rgba(8,17,52,0.08)",
+                      borderColor: "primary.main",
+                    },
+                  }}
+                >
+                  {/* Step Number Badge */}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: -12,
+                      right: 16,
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      bgcolor: "primary.main",
+                      color: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                      fontSize: "0.875rem",
+                      boxShadow: "0 4px 12px rgba(21,134,253,0.3)",
+                    }}
+                  >
+                    {step.number}
+                  </Box>
+
+                  <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
+                    <Stack spacing={2.5} alignItems="center" textAlign="center">
+                      <Box
+                        sx={{
+                          width: { xs: 70, md: 80 },
+                          height: { xs: 70, md: 80 },
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          mt: 1,
+                        }}
+                      >
+                        <Image
+                          src={step.icon}
+                          alt={step.title}
+                          width={60}
+                          height={60}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "contain",
+                          }}
+                        />
+                      </Box>
+                      <Box>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontWeight: 700,
+                            fontSize: { xs: "1.1rem", md: "1.25rem" },
+                            mb: 1.5,
+                            letterSpacing: "-0.01em",
+                          }}
+                        >
+                          {step.title}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "text.secondary",
+                            fontSize: { xs: "0.875rem", md: "0.95rem" },
+                            lineHeight: 1.7,
+                          }}
+                        >
+                          {step.description}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
-
-          {/* Steps Section */}
-          <Grid size={{ xs: 12, lg: 6 }}>
-            <Grid container spacing={{ xs: 2, md: 3 }}>
-              {/* Step 1 */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box
-                  sx={{
-                    border: "2px solid #ddd",
-                    borderRadius: "10px",
-                    p: { xs: 2, md: 3 },
-                    height: { xs: "auto", sm: "200px", md: "220px" },
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    textAlign: "center",
-                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
-                    },
-                  }}
-                >
-                  <Image
-                    src={checkDoctorProfile}
-                    alt="Search Doctor"
-                    width={50}
-                    height={50}
-                    style={{ margin: "0 auto 12px" }}
-                  />
-                  <Typography
-                    variant="h5"
-                    fontWeight={500}
-                    sx={{
-                      fontSize: { xs: "1.125rem", md: "1.25rem" },
-                      mb: 1,
-                    }}
-                  >
-                    Search Doctor
-                  </Typography>
-                  <Typography
-                    fontWeight={300}
-                    variant="body2"
-                    color="primary.body1"
-                    sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
-                  >
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                    Consequuntur nisi.
-                  </Typography>
-                </Box>
-              </Grid>
-
-              {/* Step 2 */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box
-                  sx={{
-                    border: "2px solid #ddd",
-                    borderRadius: "10px",
-                    p: { xs: 2, md: 3 },
-                    height: { xs: "auto", sm: "200px", md: "220px" },
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    textAlign: "center",
-                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
-                    },
-                  }}
-                >
-                  <Image
-                    src={seachDoctor}
-                    alt="Check Doctor Profile"
-                    width={50}
-                    height={50}
-                    style={{ margin: "0 auto 12px" }}
-                  />
-                  <Typography
-                    variant="h5"
-                    fontWeight={500}
-                    sx={{
-                      fontSize: { xs: "1.125rem", md: "1.25rem" },
-                      mb: 1,
-                    }}
-                  >
-                    Check Doctor Profile
-                  </Typography>
-                  <Typography
-                    fontWeight={300}
-                    variant="body2"
-                    color="primary.body1"
-                    sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
-                  >
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                    Consequuntur nisi.
-                  </Typography>
-                </Box>
-              </Grid>
-
-              {/* Step 3 */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box
-                  sx={{
-                    border: "2px solid #ddd",
-                    borderRadius: "10px",
-                    p: { xs: 2, md: 3 },
-                    height: { xs: "auto", sm: "200px", md: "220px" },
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    textAlign: "center",
-                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
-                    },
-                  }}
-                >
-                  <Image
-                    src={appointment}
-                    alt="Schedule Appointment"
-                    width={50}
-                    height={50}
-                    style={{ margin: "0 auto 12px" }}
-                  />
-                  <Typography
-                    variant="h5"
-                    fontWeight={500}
-                    sx={{
-                      fontSize: { xs: "1.125rem", md: "1.25rem" },
-                      mb: 1,
-                    }}
-                  >
-                    Schedule Appointment
-                  </Typography>
-                  <Typography
-                    fontWeight={300}
-                    variant="body2"
-                    color="primary.body1"
-                    sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
-                  >
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                    Consequuntur nisi.
-                  </Typography>
-                </Box>
-              </Grid>
-
-              {/* Step 4 */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box
-                  sx={{
-                    border: "2px solid #ddd",
-                    borderRadius: "10px",
-                    p: { xs: 2, md: 3 },
-                    height: { xs: "auto", sm: "200px", md: "220px" },
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    textAlign: "center",
-                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
-                    },
-                  }}
-                >
-                  <Image
-                    src={charity}
-                    alt="Get Your Solution"
-                    width={50}
-                    height={50}
-                    style={{ margin: "0 auto 12px" }}
-                  />
-                  <Typography
-                    variant="h5"
-                    fontWeight={500}
-                    sx={{
-                      fontSize: { xs: "1.125rem", md: "1.25rem" },
-                      mb: 1,
-                    }}
-                  >
-                    Get Your Solution
-                  </Typography>
-                  <Typography
-                    fontWeight={300}
-                    variant="body2"
-                    color="primary.body1"
-                    sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
-                  >
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                    Consequuntur nisi.
-                  </Typography>
-                </Box>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Box>
-    </Container>
+        </Stack>
+      </Container>
+    </Box>
   );
 };
 

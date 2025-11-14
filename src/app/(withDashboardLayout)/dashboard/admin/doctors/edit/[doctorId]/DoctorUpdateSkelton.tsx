@@ -1,61 +1,57 @@
 import { Box, Skeleton, Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import React from "react";
 
-const DoctorUpdateSkeleton: React.FC = () => {
+const DoctorUpdateSkeleton = () => {
   return (
-    <Box sx={{ width: "100%", padding: 2 }}>
+    <Box
+      sx={{
+        width: "100%",
+        p: { xs: 2, md: 3 },
+        bgcolor: "white",
+        borderRadius: 4,
+        boxShadow: "0 18px 45px rgba(21,134,253,0.08)",
+        border: "1px solid",
+        borderColor: "divider",
+      }}
+    >
       <Stack spacing={4}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Skeleton variant="rectangular" width={200} height={40} />
-        </Box>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          alignItems="center"
+        >
+          <Skeleton variant="circular" width={120} height={120} />
+          <Skeleton variant="rounded" width={200} height={44} />
+        </Stack>
 
-        {/* Grid 1 */}
+        {[...Array(3)].map((_, sectionIndex) => (
+          <Grid container spacing={2} key={`section-${sectionIndex}`}>
+            {[...Array(3)].map((__, fieldIndex) => (
+              <Grid
+                item
+                xs={12}
+                md={4}
+                key={`field-${sectionIndex}-${fieldIndex}`}
+              >
+                <Skeleton variant="rounded" height={60} />
+              </Grid>
+            ))}
+          </Grid>
+        ))}
+
         <Grid container spacing={2}>
-          {[...Array(3)].map((_, index) => (
-            <Grid item xs={4} key={`grid1-${index}`}>
-              <Skeleton variant="rectangular" height={56} />
+          {[...Array(2)].map((_, idx) => (
+            <Grid item xs={12} md={4} key={`extra-${idx}`}>
+              <Skeleton variant="rounded" height={60} />
             </Grid>
           ))}
-        </Grid>
-
-        {/* Grid 2 */}
-        <Grid container spacing={2}>
-          {[...Array(3)].map((_, index) => (
-            <Grid item xs={4} key={`grid2-${index}`}>
-              <Skeleton variant="rectangular" height={56} />
-            </Grid>
-          ))}
-        </Grid>
-
-        {/* Grid 3 */}
-        <Grid container spacing={2}>
-          {[...Array(3)].map((_, index) => (
-            <Grid item xs={4} key={`grid3-${index}`}>
-              <Skeleton variant="rectangular" height={56} />
-            </Grid>
-          ))}
-        </Grid>
-
-        {/* Grid 4 */}
-        <Grid container spacing={2}>
-          {[...Array(2)].map((_, index) => (
-            <Grid item xs={4} key={`grid4-${index}`}>
-              <Skeleton variant="rectangular" height={56} />
-            </Grid>
-          ))}
-          <Grid item xs={4}>
-            <Skeleton
-              variant="rectangular"
-              height={56}
-              sx={{ visibility: "hidden" }}
-            />
+          <Grid item xs={12} md={4}>
+            <Skeleton variant="rounded" height={120} />
           </Grid>
         </Grid>
 
-        {/* Submit Button */}
-        <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-          <Skeleton variant="rectangular" width={100} height={36} />
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Skeleton variant="rounded" width={160} height={46} />
         </Box>
       </Stack>
     </Box>

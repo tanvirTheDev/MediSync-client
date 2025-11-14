@@ -1,245 +1,342 @@
 import assets from "@/assets";
-import { Box, Button, Container, Typography } from "@mui/material";
-import Image from "next/image";
+import {
+  Box,
+  Button,
+  Chip,
+  Container,
+  Divider,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
+import Link from "next/link";
 
 const HeroSection = () => {
   return (
-    <Container maxWidth="xl">
-      <Box
-        sx={{
-          minHeight: { xs: "auto", md: "100vh" },
-          py: { xs: 4, md: 6, lg: 8 },
-          display: "flex",
-          flexDirection: { xs: "column", lg: "row" },
-          alignItems: "center",
-          gap: { xs: 4, md: 6, lg: 8 },
-        }}
-      >
-        {/* Content Section */}
+    <Box
+      sx={{
+        background:
+          "linear-gradient(180deg, rgba(21,134,253,0.06) 0%, rgba(21,134,253,0) 60%)",
+      }}
+    >
+      <Container maxWidth="xl">
         <Box
           sx={{
-            flex: { lg: 1 },
-            order: { xs: 2, lg: 1 },
-            width: "100%",
-            maxWidth: { lg: "50%" },
+            minHeight: { xs: "auto", md: "88vh" },
+            py: { xs: 6, md: 8 },
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", lg: "1.1fr 0.9fr" },
+            alignItems: "center",
+            gap: { xs: 6, md: 8 },
           }}
         >
-          <Box
-            sx={{
-              backgroundImage: `url(${assets.svgs.grid.src})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              p: { xs: 3, md: 4, lg: 5 },
-              borderRadius: 2,
-            }}
-          >
-            <Box sx={{ space: 3 }}>
+          {/* Left: Content */}
+          <Box sx={{ order: { xs: 2, lg: 1 } }}>
+            <Box
+              sx={{
+                backgroundImage: `url(${assets.svgs.grid.src})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "top left",
+              }}
+            >
+              <Stack
+                direction="row"
+                spacing={1.5}
+                alignItems="center"
+                sx={{ mb: 2 }}
+              >
+                <Chip
+                  label="Transform Healthcare Delivery"
+                  color="primary"
+                  variant="outlined"
+                  sx={{ borderRadius: "999px", fontWeight: 600, px: 1 }}
+                />
+              </Stack>
+
               <Typography
-                variant="h1"
+                component="h1"
                 sx={{
                   fontSize: {
-                    xs: "2.5rem",
-                    sm: "3rem",
-                    md: "4rem",
-                    lg: "5rem",
+                    xs: "2rem",
+                    sm: "2.75rem",
+                    md: "3.5rem",
+                    lg: "4rem",
                   },
-                  fontWeight: 700,
+                  fontWeight: 800,
                   lineHeight: 1.1,
                   mb: 1,
+                  letterSpacing: "-0.02em",
                 }}
               >
-                Healthier Hearts
+                Better Care,
               </Typography>
               <Typography
-                variant="h1"
+                component="h1"
                 sx={{
+                  display: "block",
                   fontSize: {
-                    xs: "2.5rem",
-                    sm: "3rem",
-                    md: "4rem",
-                    lg: "5rem",
+                    xs: "2rem",
+                    sm: "2.75rem",
+                    md: "3.5rem",
+                    lg: "4rem",
                   },
-                  fontWeight: 700,
+                  fontWeight: 800,
                   lineHeight: 1.1,
-                  mb: 1,
-                }}
-              >
-                Come From
-              </Typography>
-              <Typography
-                variant="h1"
-                sx={{
-                  fontSize: {
-                    xs: "2.5rem",
-                    sm: "3rem",
-                    md: "4rem",
-                    lg: "5rem",
-                  },
-                  fontWeight: 700,
-                  lineHeight: 1.1,
+                  mb: 2.5,
                   color: "primary.main",
-                  mb: 3,
                 }}
               >
-                Preventive Care
+                Better Connected
               </Typography>
 
               <Typography
                 variant="body1"
                 sx={{
-                  fontSize: { xs: "0.875rem", md: "1rem", lg: "1.125rem" },
-                  lineHeight: 1.6,
+                  fontSize: { xs: "0.95rem", md: "1.05rem" },
+                  lineHeight: 1.75,
                   color: "text.secondary",
                   mb: 4,
-                  maxWidth: "600px",
+                  maxWidth: 700,
                 }}
               >
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ea
-                consequatur quisquam, iste minima magnam asperiores quia fugit
-                possimus, sit laborum, expedita voluptate! Inventore placeat
-                illum corporis dicta officiis? Totam, earum!
+                Streamline patient‑doctor communication, manage appointments
+                seamlessly, and deliver exceptional healthcare outcomes with our
+                comprehensive platform.
               </Typography>
 
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  gap: { xs: 2, sm: 3 },
-                  flexWrap: "wrap",
-                }}
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={{ xs: 2, sm: 2.5 }}
+                sx={{ mb: 4 }}
               >
-                <Button
-                  variant="contained"
-                  sx={{
-                    textTransform: "none",
-                    fontSize: { xs: "0.875rem", md: "1rem" },
-                    px: { xs: 3, md: 4 },
-                    py: { xs: 1.5, md: 2 },
-                  }}
-                >
-                  Make Appointment
-                </Button>
-                <Button
-                  variant="outlined"
-                  sx={{
-                    textTransform: "none",
-                    fontSize: { xs: "0.875rem", md: "1rem" },
-                    px: { xs: 3, md: 4 },
-                    py: { xs: 1.5, md: 2 },
-                  }}
-                >
-                  Contact Us
-                </Button>
-              </Box>
+                <Link href="/doctors">
+                  <Button
+                    variant="contained"
+                    sx={{
+                      textTransform: "none",
+                      fontSize: { xs: "0.95rem", md: "1rem" },
+                      px: { xs: 3.5, md: 4 },
+                      py: { xs: 1.75, md: 2 },
+                      boxShadow: 1,
+                    }}
+                  >
+                    Book Appointment
+                  </Button>
+                </Link>
+                <Link href="/contact-us">
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      textTransform: "none",
+                      fontSize: { xs: "0.95rem", md: "1rem" },
+                      px: { xs: 3.5, md: 4 },
+                      py: { xs: 1.75, md: 2 },
+                      borderWidth: 2,
+                    }}
+                  >
+                    Learn More
+                  </Button>
+                </Link>
+              </Stack>
+
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={{ xs: 2, sm: 4 }}
+              >
+                <Stack>
+                  <Typography
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: { xs: "1.4rem", md: "1.6rem" },
+                      color: "primary.main",
+                    }}
+                  >
+                    10K+
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Active Patients
+                  </Typography>
+                </Stack>
+                <Stack>
+                  <Typography
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: { xs: "1.4rem", md: "1.6rem" },
+                      color: "primary.main",
+                    }}
+                  >
+                    500+
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Doctors
+                  </Typography>
+                </Stack>
+                <Stack>
+                  <Typography
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: { xs: "1.4rem", md: "1.6rem" },
+                      color: "primary.main",
+                    }}
+                  >
+                    99%
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Uptime
+                  </Typography>
+                </Stack>
+              </Stack>
             </Box>
           </Box>
+
+          {/* Right: Visuals */}
+          <Box
+            sx={{
+              order: { xs: 1, lg: 2 },
+              position: "relative",
+              minHeight: { xs: 360, sm: 420, md: 520, lg: 600 },
+            }}
+          >
+            {/* Appointment Preview Card */}
+            <Paper
+              elevation={0}
+              sx={{
+                position: "absolute",
+                inset: { xs: 16, sm: 24 },
+                borderRadius: 3,
+                p: { xs: 2, sm: 3 },
+                border: "1px solid",
+                borderColor: "divider",
+                boxShadow:
+                  "0 10px 30px rgba(21,134,253,0.12), 0 6px 12px rgba(0,0,0,0.04)",
+                bgcolor: "background.paper",
+              }}
+            >
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                sx={{ mb: 1 }}
+              >
+                <Box>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Today&apos;s Appointments
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    5 scheduled consultations
+                  </Typography>
+                </Box>
+                <Chip size="small" label="👥" sx={{ borderRadius: 2 }} />
+              </Stack>
+              <Divider sx={{ my: 1.5 }} />
+
+              {/* Item 1 */}
+              <Box
+                sx={{
+                  p: 1.25,
+                  borderRadius: 2,
+                  bgcolor: "action.hover",
+                  mb: 1,
+                }}
+              >
+                <Typography sx={{ fontWeight: 600, mb: 0.5 }}>
+                  John Doe
+                </Typography>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Consultation · 09:00 AM
+                  </Typography>
+                  <Chip
+                    size="small"
+                    color="success"
+                    label="Confirmed"
+                    sx={{ height: 22 }}
+                  />
+                </Stack>
+              </Box>
+
+              {/* Item 2 */}
+              <Box
+                sx={{
+                  p: 1.25,
+                  borderRadius: 2,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  mb: 1,
+                }}
+              >
+                <Typography sx={{ fontWeight: 600, mb: 0.5 }}>
+                  Jane Smith
+                </Typography>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Follow‑up · 10:30 AM
+                  </Typography>
+                  <Chip
+                    size="small"
+                    label="In Progress"
+                    sx={{
+                      height: 22,
+                      bgcolor: "warning.light",
+                      color: "warning.dark",
+                    }}
+                  />
+                </Stack>
+              </Box>
+
+              {/* Item 3 */}
+              <Box
+                sx={{
+                  p: 1.25,
+                  borderRadius: 2,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  mb: 2,
+                }}
+              >
+                <Typography sx={{ fontWeight: 600, mb: 0.5 }}>
+                  Mike Johnson
+                </Typography>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Check‑up · 02:00 PM
+                  </Typography>
+                  <Chip
+                    size="small"
+                    label="Pending"
+                    sx={{
+                      height: 22,
+                      bgcolor: "info.light",
+                      color: "info.dark",
+                    }}
+                  />
+                </Stack>
+              </Box>
+
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ textTransform: "none" }}
+              >
+                View All Appointments
+              </Button>
+            </Paper>
+          </Box>
         </Box>
-
-        {/* Images Section */}
-        <Box
-          sx={{
-            flex: { lg: 1 },
-            order: { xs: 1, lg: 2 },
-            width: "100%",
-            maxWidth: { lg: "50%" },
-            position: "relative",
-            minHeight: { xs: "400px", md: "500px", lg: "600px" },
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {/* Arrow */}
-          <Box
-            sx={{
-              position: "absolute",
-              top: { xs: "5%", md: "10%" },
-              left: { xs: "20%", md: "30%" },
-              zIndex: 2,
-            }}
-          >
-            <Image
-              src={assets.svgs.arrow || "/default-Image"}
-              width={60}
-              height={60}
-              alt="arrow"
-              style={{
-                width: "auto",
-                height: "auto",
-                maxWidth: "60px",
-              }}
-            />
-          </Box>
-
-          {/* Doctor 1 */}
-          <Box
-            sx={{
-              position: "absolute",
-              left: { xs: "5%", md: "10%" },
-              top: { xs: "15%", md: "20%" },
-              zIndex: 1,
-            }}
-          >
-            <Image
-              src={assets.images.doctor1 || "/default-Image"}
-              alt="doctor1"
-              width={200}
-              height={400}
-              style={{
-                width: "auto",
-                height: "auto",
-                maxWidth: "200px",
-              }}
-            />
-          </Box>
-
-          {/* Doctor 2 */}
-          <Box
-            sx={{
-              position: "absolute",
-              right: { xs: "5%", md: "10%" },
-              top: { xs: "5%", md: "10%" },
-              zIndex: 1,
-            }}
-          >
-            <Image
-              src={assets.images.doctor2 || "/default-Image"}
-              alt="doctor2"
-              width={250}
-              height={500}
-              style={{
-                width: "auto",
-                height: "auto",
-                maxWidth: "250px",
-              }}
-            />
-          </Box>
-
-          {/* Doctor 3 */}
-          <Box
-            sx={{
-              position: "absolute",
-              left: { xs: "10%", md: "15%" },
-              bottom: { xs: "5%", md: "10%" },
-              zIndex: 1,
-            }}
-          >
-            <Image
-              src={assets.images.doctor3 || "/default-Image"}
-              alt="doctor3"
-              width={220}
-              height={400}
-              style={{
-                width: "auto",
-                height: "auto",
-                maxWidth: "220px",
-              }}
-            />
-          </Box>
-        </Box>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 

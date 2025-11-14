@@ -1,7 +1,7 @@
 import ScrollSpecialities from "@/components/UI/Doctor/ScrollSpecialities";
 import DoctorCard from "@/components/UI/HomePage/TopRatedDoctors/DoctorCard";
 import { TDoctor } from "@/types";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Chip, Container, Grid, Stack, Typography } from "@mui/material";
 
 // Assuming you have a type for the expected structure of searchParams
 interface SearchParams {
@@ -28,90 +28,103 @@ const Doctors = async ({ searchParams }: TSearchProps) => {
   const { data } = await res.json();
 
   return (
-    <Container maxWidth="xl">
-      <Box sx={{ py: { xs: 2, md: 4 }, px: { xs: 1, md: 2 } }}>
-        {/* Header Section */}
-        <Box sx={{ mb: { xs: 3, md: 4 } }}>
-          <Typography
-            variant="h3"
-            component="h1"
-            sx={{
-              fontSize: { xs: "1.75rem", sm: "2.25rem", md: "2.5rem" },
-              fontWeight: 700,
-              textAlign: "center",
-              color: "primary.main",
-              mb: 1,
-            }}
-          >
-            Find Your Doctor
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              fontSize: { xs: "0.875rem", md: "1rem" },
-              textAlign: "center",
-              color: "text.secondary",
-              maxWidth: "600px",
-              mx: "auto",
-            }}
-          >
-            Browse through our network of qualified healthcare professionals
-          </Typography>
-        </Box>
-
-        {/* Specialties Section */}
-        <Box sx={{ mb: { xs: 3, md: 4 } }}>
-          <ScrollSpecialities specialities={(await searchParams).specialties} />
-        </Box>
-
-        {/* Doctors Grid */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: { xs: 2, md: 3 },
-            mt: { xs: 2, md: 3 },
-          }}
-        >
-          {data?.map((doctor: TDoctor) => (
-            <Box key={doctor.id} sx={{ width: "100%" }}>
-              <DoctorCard doctor={doctor} />
-            </Box>
-          ))}
-        </Box>
-
-        {/* No Results Message */}
-        {(!data || data.length === 0) && (
-          <Box
-            sx={{
-              textAlign: "center",
-              py: { xs: 4, md: 6 },
-              px: { xs: 2, md: 4 },
-            }}
-          >
+    <Box
+      sx={{
+        py: { xs: 6, md: 8, lg: 10 },
+        background:
+          "linear-gradient(180deg, rgba(21,134,253,0.04) 0%, rgba(255,255,255,1) 100%)",
+        minHeight: "100vh",
+      }}
+    >
+      <Container maxWidth="xl">
+        <Stack spacing={{ xs: 4, md: 6 }}>
+          {/* Header Section */}
+          <Stack spacing={2} alignItems="center" textAlign="center">
+            <Chip
+              label="Find Your Perfect Doctor"
+              color="primary"
+              variant="outlined"
+              sx={{ borderRadius: "999px", fontWeight: 600 }}
+            />
             <Typography
-              variant="h6"
+              component="h1"
               sx={{
-                color: "text.secondary",
-                mb: 1,
-                fontSize: { xs: "1rem", md: "1.25rem" },
+                fontSize: {
+                  xs: "2rem",
+                  sm: "2.5rem",
+                  md: "3rem",
+                  lg: "3.5rem",
+                },
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                color: "text.primary",
               }}
             >
-              No doctors found
+              Browse Our Expert Physicians
             </Typography>
             <Typography
-              variant="body2"
               sx={{
+                fontSize: { xs: "0.95rem", md: "1.05rem", lg: "1.15rem" },
                 color: "text.secondary",
-                fontSize: { xs: "0.875rem", md: "1rem" },
+                maxWidth: "700px",
+                lineHeight: 1.7,
               }}
             >
-              Try selecting a different specialty or check back later
+              Connect with board-certified specialists who are committed to
+              delivering personalized, compassionate care tailored to your
+              unique health needs.
             </Typography>
+          </Stack>
+
+          {/* Specialties Section */}
+          <Box>
+            <ScrollSpecialities specialities={params.specialties} />
           </Box>
-        )}
-      </Box>
-    </Container>
+
+          {/* Doctors Grid */}
+          {data && data.length > 0 ? (
+            <Grid container spacing={{ xs: 3, md: 4 }}>
+              {data.map((doctor: TDoctor) => (
+                <Grid key={doctor.id} item xs={12} sm={6} lg={3}>
+                  <DoctorCard doctor={doctor} />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Box
+              sx={{
+                textAlign: "center",
+                py: { xs: 8, md: 12 },
+                px: { xs: 2, md: 4 },
+              }}
+            >
+              <Typography
+                variant="h5"
+                sx={{
+                  color: "text.secondary",
+                  mb: 1.5,
+                  fontSize: { xs: "1.25rem", md: "1.5rem" },
+                  fontWeight: 600,
+                }}
+              >
+                No doctors found
+              </Typography>
+              <Typography
+                sx={{
+                  color: "text.secondary",
+                  fontSize: { xs: "0.95rem", md: "1.05rem" },
+                  maxWidth: "500px",
+                  mx: "auto",
+                }}
+              >
+                Try selecting a different specialty or check back later for new
+                additions to our network.
+              </Typography>
+            </Box>
+          )}
+        </Stack>
+      </Container>
+    </Box>
   );
 };
 

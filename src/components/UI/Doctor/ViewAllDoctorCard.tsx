@@ -1,7 +1,6 @@
 import { TDoctor } from "@/types";
 import PhoneIcon from "@mui/icons-material/Phone";
-import StarIcon from "@mui/icons-material/Star";
-import { Box, Button, Chip, Rating, Stack, Typography } from "@mui/material";
+import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -89,16 +88,6 @@ const ViewAllDoctorCard = ({ doctor }: { doctor: TDoctor }) => {
             sx={{ display: { xs: "flex", md: "none" } }}
           >
             <Stack direction="row" alignItems="center" spacing={0.5}>
-              <StarIcon sx={{ color: "#FFA726", fontSize: "1.1rem" }} />
-              <Typography fontWeight={600} fontSize="0.95rem">
-                {doctor?.averageRating || 0}
-              </Typography>
-              <Typography fontSize="0.8rem" color="text.secondary">
-                ({doctor?.review?.length || 0})
-              </Typography>
-            </Stack>
-
-            <Stack direction="row" alignItems="center" spacing={0.5}>
               <PhoneIcon sx={{ color: "primary.main", fontSize: "1.1rem" }} />
               <Typography fontSize="0.95rem" fontWeight={500}>
                 {doctor?.contactNumber}
@@ -115,11 +104,11 @@ const ViewAllDoctorCard = ({ doctor }: { doctor: TDoctor }) => {
               gap: 1,
             }}
           >
-            {doctor?.doctorSpecialties?.length ? (
-              doctor?.doctorSpecialties.map((specialty, idx) => (
+            {doctor?.doctorSpecialities?.length ? (
+              doctor?.doctorSpecialities.map((speciality, idx) => (
                 <Chip
-                  key={specialty?.specialties?.title || idx}
-                  label={specialty?.specialties?.title}
+                  key={speciality?.specialities?.title || idx}
+                  label={speciality?.specialities?.title}
                   size="small"
                   color="primary"
                 />
@@ -146,7 +135,7 @@ const ViewAllDoctorCard = ({ doctor }: { doctor: TDoctor }) => {
             fontSize="1rem"
             textAlign={{ xs: "center", md: "left" }}
           >
-            Consultation Fee: Taka {doctor?.apointmentFee}{" "}
+            Consultation Fee: Taka {doctor?.appointmentFee}{" "}
             <span style={{ color: "#888", fontWeight: 400 }}>(incl. VAT)</span>
           </Typography>
           <Typography
@@ -201,26 +190,6 @@ const ViewAllDoctorCard = ({ doctor }: { doctor: TDoctor }) => {
             >
               {doctor?.currentWorkingPlace}
             </Typography>
-          </Box>
-
-          <Box>
-            <Typography color="secondary.main">Average Rating</Typography>
-            <Box
-              sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5 }}
-            >
-              <Rating
-                value={doctor?.averageRating || 0}
-                readOnly
-                precision={0.1}
-                size="small"
-              />
-              <Typography fontWeight={600}>
-                {doctor?.averageRating || 0}
-              </Typography>
-              <Typography fontSize="0.75rem" color="text.secondary">
-                ({doctor?.review?.length || 0})
-              </Typography>
-            </Box>
           </Box>
 
           <Box>

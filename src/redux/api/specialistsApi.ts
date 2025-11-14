@@ -1,3 +1,4 @@
+import { TDoctor } from "@/types";
 import { TSpecialty } from "@/types/specialities";
 import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
@@ -6,7 +7,7 @@ const specialistsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createSpecialists: build.mutation({
       query: (data) => ({
-        url: "/specialties",
+        url: "/specialities",
         method: "POST",
         ContentType: "multipart/form-data",
         data,
@@ -15,7 +16,7 @@ const specialistsApi = baseApi.injectEndpoints({
     }),
     getSpecialists: build.query({
       query: () => ({
-        url: "/specialties",
+        url: "/specialities",
         method: "GET",
       }),
       transformResponse: (response: TSpecialty[]) => {
@@ -23,9 +24,19 @@ const specialistsApi = baseApi.injectEndpoints({
       },
       providesTags: [tagTypes.specialisties],
     }),
+    getDoctorBySpecialists: build.query({
+      query: (id: string) => ({
+        url: "/specialities/:id",
+        method: "GET",
+      }),
+      transformResponse: (response: TDoctor[]) => {
+        return response;
+      },
+      providesTags: [tagTypes.specialisties],
+    }),
     deleteSpecialists: build.mutation({
       query: (id) => ({
-        url: `/specialties/${id}`,
+        url: `/specialities/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: [tagTypes.specialisties],
@@ -37,4 +48,5 @@ export const {
   useCreateSpecialistsMutation,
   useGetSpecialistsQuery,
   useDeleteSpecialistsMutation,
+  useGetDoctorBySpecialistsQuery,
 } = specialistsApi;

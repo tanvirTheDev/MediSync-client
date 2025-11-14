@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import HeroSection from "@/components/UI/HomePage/HeroSection/HeroSection";
 import HowItWorks from "@/components/UI/HomePage/HowItWorks/HowItWorks";
 import Specialists from "@/components/UI/HomePage/Specialist/Specialists";
@@ -8,10 +10,10 @@ const HomePage = () => {
   return (
     <div>
       <HeroSection />
+      <HowItWorks />
       <Specialists />
       <TopRatedDoctors />
       <WhyUs />
-      <HowItWorks />
     </div>
   );
 };

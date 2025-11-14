@@ -28,7 +28,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 }
 
 export default function MultipleSelectChip({
-  allSpecialties,
+  allSpecialities,
   setSelectedIds,
   selectedIds,
 }: any) {
@@ -49,7 +49,7 @@ export default function MultipleSelectChip({
           id="demo-multiple-chip-label"
           sx={{ mt: selectedIds.length > 0 ? 0 : -1 }}
         >
-          Specialties
+          Specialities
         </InputLabel>
         <Select
           labelId="demo-multiple-chip-label"
@@ -60,7 +60,7 @@ export default function MultipleSelectChip({
           input={
             <OutlinedInput
               id="select-multiple-chip"
-              label="Specialties"
+              label="Specialities"
               size="small"
             />
           }
@@ -71,9 +71,9 @@ export default function MultipleSelectChip({
                   size="small"
                   key={value}
                   label={
-                    allSpecialties.find((item: any) => item.id === value)
+                    allSpecialities.find((item: any) => item.id === value)
                       ? `${
-                          allSpecialties.find((item: any) => item.id === value)
+                          allSpecialities.find((item: any) => item.id === value)
                             ?.title
                         }`
                       : ""
@@ -84,7 +84,7 @@ export default function MultipleSelectChip({
           )}
           MenuProps={MenuProps}
         >
-          {allSpecialties?.map((item: any) => (
+          {allSpecialities?.map((item: any) => (
             <MenuItem
               key={item?.id}
               value={item.id}

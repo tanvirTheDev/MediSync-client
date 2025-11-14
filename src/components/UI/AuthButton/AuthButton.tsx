@@ -14,7 +14,7 @@ const AuthButton = () => {
 
   return (
     <div>
-      {userData?.userId ? (
+      {userData?.email ? (
         <Link href="">
           <Button color="error" onClick={handleLogOut}>
             Logout

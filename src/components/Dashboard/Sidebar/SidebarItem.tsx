@@ -7,38 +7,65 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { memo } from "react";
 
-type IProps = {
+type SidebarItemProps = {
   item: IDrawerItem;
-  index: number;
 };
 
-const SidebarItem = ({ item, index }: IProps) => {
+const SidebarItem = ({ item }: SidebarItemProps) => {
   const linkPath = `/dashboard/${item.path}`;
-  const pathName = usePathname();
+  const pathname = usePathname();
+  const isActive = pathname === linkPath;
+
   return (
-    <Link href={linkPath}>
-      <ListItem
-        key={index}
-        disablePadding
+    <ListItem disablePadding sx={{ mb: 0.5 }}>
+      <ListItemButton
+        component={Link}
+        href={linkPath}
+        selected={isActive}
         sx={{
-          ...(linkPath === pathName
+          mx: 1,
+          borderRadius: 2,
+          px: 2,
+          py: 1.25,
+          gap: 1.5,
+          ...(isActive
             ? {
-                borderRight: "3px solid #1586FD",
-                "& svg": {
-                  color: "#1586fd",
+                bgcolor: "rgba(21,134,253,0.12)",
+                "& .MuiListItemIcon-root": {
+                  color: "primary.main",
                 },
               }
-            : {}),
+            : {
+                "&:hover": {
+                  bgcolor: "rgba(21,134,253,0.08)",
+                },
+              }),
         }}
       >
-        <ListItemButton>
-          <ListItemIcon>{item.icon && <item.icon />}</ListItemIcon>
-          <ListItemText primary={item.title} />
-        </ListItemButton>
-      </ListItem>
-    </Link>
+        <ListItemIcon
+          sx={{
+            minWidth: 36,
+            color: isActive ? "primary.main" : "text.secondary",
+            "& svg": {
+              fontSize: "1.25rem",
+            },
+          }}
+        >
+          {item.icon && <item.icon />}
+        </ListItemIcon>
+        <ListItemText
+          primary={item.title}
+          primaryTypographyProps={{
+            fontWeight: isActive ? 600 : 500,
+            fontSize: { xs: "0.875rem", md: "0.95rem" },
+            color: isActive ? "primary.main" : "text.secondary",
+          }}
+        />
+      </ListItemButton>
+    </ListItem>
   );
 };
 
-export default SidebarItem;
+export default memo(SidebarItem);

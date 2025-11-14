@@ -7,222 +7,238 @@ import FullScreenModal from "@/components/Shared/PHModal/PHFullScreenModal";
 import { useCreateDoctorsMutation } from "@/redux/api/doctorsApi";
 import { useGetSpecialistsQuery } from "@/redux/api/specialistsApi";
 import { modifyData } from "@/utils/modifyData";
-import { Box, Button, Stack } from "@mui/material";
-import Grid from "@mui/material/Grid2";
-import React from "react";
+import { LoadingButton } from "@mui/lab";
+import { Box, Divider, Grid, Stack, Typography, alpha } from "@mui/material";
+import { useMemo } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 
 type TProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  title?: string;
 };
 
 const DoctorModal = ({ open, setOpen }: TProps) => {
-  const [createDoctors, { data, isLoading: uploadImage }] =
-    useCreateDoctorsMutation();
-  console.log("create doctor data", data);
-  const { data: specialitiesData } = useGetSpecialistsQuery(undefined);
+  const [createDoctor, { isLoading }] = useCreateDoctorsMutation();
+  const { data: specialtiesData } = useGetSpecialistsQuery(undefined);
+
+  const specialtyOptions = useMemo(
+    () =>
+      specialtiesData?.map((item) => ({
+        value: item.id,
+        label: item.title,
+      })) || [],
+    [specialtiesData]
+  );
 
   const handleSubmit = async (values: FieldValues) => {
-    console.log("Form Values:", values);
+    if (!values.file) {
+      toast.error("Please select an icon for the specialty.");
+      return;
+    }
 
-    // Convert numeric fields
-    values.doctor.experience = Number(values.doctor.experience);
-    values.doctor.apointmentFee = Number(values.doctor.apointmentFee);
-
-    // Transform specialties to the backend format
-    const specialties = (values.doctor.doctorSpecialties || []).map(
+    if (!values.file.type.startsWith("image/")) {
+      toast.error("Please upload a valid image file (PNG, JPG, SVG).");
+      return;
+    }
+    const formattedSpecialties = (values.doctor.specialties || []).map(
       (specialtyId: string) => ({
         specialtiesId: specialtyId,
         isDeleted: false,
       })
     );
 
-    // Create the data structure for the backend
-    const doctorData = {
+    const payload = {
       password: values.password,
       doctor: {
-        email: values.doctor.email,
-        name: values.doctor.name,
-        contactNumber: values.doctor.contactNumber,
-        address: values.doctor.address,
-        registrationNumber: values.doctor.registrationNumber,
-        experience: values.doctor.experience,
-        gender: values.doctor.gender,
-        apointmentFee: values.doctor.apointmentFee,
-        qualification: values.doctor.qualification,
-        currentWorkingPlace: values.doctor.currentWorkingPlace,
-        designation: values.doctor.designation,
-        specialties: specialties,
+        ...values.doctor,
+        experience: Number(values.doctor.experience),
+        appointmentFee: Number(values.doctor.appointmentFee),
+        specialties: formattedSpecialties,
       },
     };
 
-    console.log("Specialties being sent:", specialties);
-
-    // Use the modifyData utility function
-    const formData = modifyData(doctorData);
-    console.log("FormData being sent:", formData);
+    const formData = modifyData({ payload, file: values.file });
 
     try {
-      const res = await createDoctors(formData).unwrap();
-      console.log("API Response:", res);
+      const res = await createDoctor(formData).unwrap();
+      console.log("res", res);
       if (res?.data?.id) {
-        toast.success("Doctor Created Successfully");
+        toast.success("Doctor created successfully");
         setOpen(false);
       }
     } catch (error: any) {
-      console.error("API Error:", error);
-      toast.error(
-        "Failed to create doctor: " + (error.message || "Unknown error")
-      );
+      toast.error(error?.data?.message || "Failed to create doctor");
     }
   };
 
   const defaultValues = {
-    password: "123456",
+    password: "",
     doctor: {
-      email: "doctor356@gmail.com",
-      name: "Dr. Fahim",
-      contactNumber: "+1234567890",
-      address: "123 Medical Street, Cityville",
-      registrationNumber: "12345",
-      experience: 5,
+      email: "",
+      name: "",
+      contactNumber: "",
+      address: "",
+      registrationNumber: "",
+      experience: 0,
       gender: "MALE",
-      apointmentFee: 100,
-      qualification: "MD, PhD",
-      currentWorkingPlace: "City Hospital",
-      designation: "Senior Consultant",
-      doctorSpecialties: [],
+      appointmentFee: 0,
+      qualification: "",
+      currentWorkingPlace: "",
+      designation: "",
+      specialties: [],
     },
   };
 
   return (
     <FullScreenModal open={open} setOpen={setOpen} title="Create a New Doctor">
       <PHForm onSubmit={handleSubmit} defaultValues={defaultValues}>
-        <Box>
-          <Stack spacing={4}>
-            <Box my={3}>
-              {uploadImage ? (
-                <p>Uploading...</p>
-              ) : (
-                <PHFileUploader name="file" label="Choose Your Profile Photo" />
-              )}
-            </Box>
-            {/* grid - 1 */}
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 4 }}>
-                <InputForm fullWidth name="doctor.name" label="Name" />
-              </Grid>
-              <Grid size={{ xs: 4 }}>
-                <InputForm
-                  fullWidth
-                  name="doctor.email"
-                  label="Email"
-                  type="email"
-                />
-              </Grid>
-              <Grid size={{ xs: 4 }}>
-                <InputForm
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                />
-              </Grid>
+        <Stack spacing={4}>
+          <Typography variant="body2" color="text.secondary">
+            Fill out the doctor’s profile details below. Required fields are
+            marked with an asterisk.
+          </Typography>
+
+          <Box
+            sx={{
+              p: 3,
+              borderRadius: 3,
+              border: "1px solid",
+              borderColor: "divider",
+              bgcolor: alpha("#1586FD", 0.03),
+            }}
+          >
+            <Stack direction={{ xs: "column", md: "row" }} spacing={3}>
+              <PHFileUploader name="file" label="Upload Profile Photo" />
+              <Stack spacing={1}>
+                <Typography variant="subtitle1" fontWeight={600}>
+                  Profile Photo
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Upload a clear, professional photo. Supported formats: PNG,
+                  JPG. Max size 5MB.
+                </Typography>
+              </Stack>
+            </Stack>
+          </Box>
+
+          <Grid container spacing={2.5}>
+            <Grid item xs={12} md={4}>
+              <InputForm name="doctor.name" label="Full Name *" fullWidth />
             </Grid>
-            {/* grid - 2  */}
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 4 }}>
-                <InputForm
-                  fullWidth
-                  name="doctor.contactNumber"
-                  label="Contact Number"
-                />
-              </Grid>
-              <Grid size={{ xs: 4 }}>
-                <InputForm fullWidth name="doctor.address" label="Address" />
-              </Grid>
-              <Grid size={{ xs: 4 }}>
-                <InputForm
-                  fullWidth
-                  name="doctor.registrationNumber"
-                  label="Registration Number"
-                />
-              </Grid>
+            <Grid item xs={12} md={4}>
+              <InputForm
+                name="doctor.email"
+                label="Email Address *"
+                type="email"
+                fullWidth
+              />
             </Grid>
-            {/* grid - 3  */}
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 4 }}>
-                <InputForm
-                  fullWidth
-                  name="doctor.experience"
-                  label="Experience"
-                />
-              </Grid>
-              <Grid size={{ xs: 4 }}>
-                <SelectField
-                  name="doctor.gender"
-                  label="Gender"
-                  size="small"
-                  options={[
-                    { value: "MALE", label: "MALE" },
-                    { value: "FEMALE", label: "FEMALE" },
-                    { value: "OTHERS", label: "OTHERS" },
-                  ]}
-                />
-              </Grid>
-              <Grid size={{ xs: 4 }}>
-                <InputForm
-                  fullWidth
-                  name="doctor.apointmentFee"
-                  label="Appointment Fee"
-                />
-              </Grid>
+            <Grid item xs={12} md={4}>
+              <InputForm
+                name="password"
+                label="Temporary Password *"
+                type="password"
+                fullWidth
+              />
             </Grid>
-            {/* grid - 4  */}
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 4 }}>
-                <InputForm
-                  fullWidth
-                  name="doctor.qualification"
-                  label="Qualification"
-                />
-              </Grid>
-              <Grid size={{ xs: 4 }}>
-                <InputForm
-                  fullWidth
-                  name="doctor.currentWorkingPlace"
-                  label="Current Working Place"
-                />
-              </Grid>
-              <Grid size={{ xs: 4 }}>
-                <InputForm
-                  fullWidth
-                  name="doctor.designation"
-                  label="Designation"
-                />
-              </Grid>
-              <Grid size={{ xs: 4 }}>
-                <MultiChipField
-                  name="doctor.doctorSpecialties"
-                  label="Select Specialties"
-                  options={
-                    specialitiesData?.map((item) => ({
-                      value: item.id,
-                      label: item.title,
-                    })) || []
-                  }
-                  size="medium"
-                />
-              </Grid>
+
+            <Grid item xs={12} md={4}>
+              <InputForm
+                name="doctor.contactNumber"
+                label="Contact Number *"
+                fullWidth
+              />
             </Grid>
-            <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+            <Grid item xs={12} md={4}>
+              <InputForm name="doctor.address" label="Address" fullWidth />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <InputForm
+                name="doctor.registrationNumber"
+                label="Registration Number *"
+                fullWidth
+              />
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <InputForm
+                name="doctor.experience"
+                label="Years of Experience *"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <SelectField
+                name="doctor.gender"
+                label="Gender"
+                size="small"
+                options={[
+                  { value: "MALE", label: "Male" },
+                  { value: "FEMALE", label: "Female" },
+                  { value: "OTHER", label: "Other" },
+                ]}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <InputForm
+                name="doctor.appointmentFee"
+                label="Appointment Fee (৳)"
+                fullWidth
+              />
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <InputForm
+                name="doctor.qualification"
+                label="Qualification"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <InputForm
+                name="doctor.currentWorkingPlace"
+                label="Current Workplace"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <InputForm
+                name="doctor.designation"
+                label="Designation"
+                fullWidth
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <MultiChipField
+                name="doctor.specialties"
+                label="Select Specialties"
+                options={specialtyOptions}
+                size="medium"
+              />
+            </Grid>
+          </Grid>
+
+          <Divider />
+
+          <Stack direction="row" justifyContent="flex-end">
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              loading={isLoading}
+              sx={{
+                textTransform: "none",
+                borderRadius: 3,
+                px: 4,
+                py: 1.25,
+                fontWeight: 600,
+              }}
+            >
               Create Doctor
-            </Button>
+            </LoadingButton>
           </Stack>
-        </Box>
+        </Stack>
       </PHForm>
     </FullScreenModal>
   );
