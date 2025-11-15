@@ -2,13 +2,18 @@ import { authKey } from "@/constants/authKey";
 import { setTokenAccess } from "@/services/actions/setTokenAccess";
 import { getNewAccessToken } from "@/services/auth.services";
 import { IGenericErrorResponse } from "@/types";
-import { getFormLocalStorage, setLocalStorage } from "@/utils/local-storage";
+import {
+  getFormLocalStorage,
+  removeFormLocalStorage,
+  setLocalStorage,
+} from "@/utils/local-storage";
 import axios, { AxiosResponse } from "axios";
 
 const instance = axios.create();
 instance.defaults.headers.post["Content-Type"] = "application/json";
 instance.defaults.headers["Accept"] = "application/json";
 instance.defaults.timeout = 60000;
+instance.defaults.withCredentials = true;
 
 // Helper function to get token from cookies
 const getTokenFromCookies = () => {
@@ -43,11 +48,9 @@ instance.interceptors.request.use(
   }
 );
 
-// Add a response interceptor
+// axiosInstance.ts - Update the response interceptor
 instance.interceptors.response.use(
   function (response: AxiosResponse) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
     const responseObject = {
       data: response?.data?.data,
       meta: response?.data?.data,
@@ -57,22 +60,29 @@ instance.interceptors.response.use(
   async function (error) {
     const config = error.config;
     console.log(error);
-    if (error?.response?.status === 500 && !config.sent) {
+
+    // Change this from 500 to 401
+    if (error?.response?.status === 401 && !config.sent) {
       config.sent = true;
-      const response = await getNewAccessToken();
-      const accessToken = response?.data?.accessToken;
-      config.headers["Authorization"] = accessToken;
-      setLocalStorage(authKey, accessToken);
-      setTokenAccess(accessToken);
-      return instance(config);
+      try {
+        const response = await getNewAccessToken();
+        const accessToken = response?.data?.accessToken;
+        config.headers["Authorization"] = accessToken;
+        setLocalStorage(authKey, accessToken);
+        setTokenAccess(accessToken);
+        return instance(config);
+      } catch (refreshError) {
+        // If refresh fails, redirect to login
+        removeFormLocalStorage(authKey);
+        window.location.href = "/login";
+        return Promise.reject(refreshError);
+      }
     } else {
       const responseObject: IGenericErrorResponse = {
         statusCode: error?.response?.data?.statusCode || 500,
         message: error?.response?.data?.message || "Something went wrong!!!",
         errorMessages: error?.response?.data?.message,
       };
-      // Any status codes that fall outside the range of 2xx cause this function to trigger
-      // Do something with response error
       return responseObject;
     }
   }
