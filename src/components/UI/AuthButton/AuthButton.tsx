@@ -1,6 +1,6 @@
 import { logoutUser } from "@/services/actions/logoutUser";
 import { getUserInfo } from "@/services/auth.services";
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -13,19 +13,35 @@ const AuthButton = () => {
   };
 
   return (
-    <div>
+    <Stack direction="row" spacing={2} alignItems="center">
       {userData?.email ? (
-        <Link href="">
-          <Button color="error" onClick={handleLogOut}>
+        <>
+          {/* DASHBOARD (Only when logged in) */}
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            href="/dashboard"
+          >
+            Dashboard
+          </Button>
+
+          {/* LOGOUT */}
+          <Button variant="contained" color="error" onClick={handleLogOut}>
             Logout
           </Button>
-        </Link>
+        </>
       ) : (
-        <Link href="/login">
-          <Button>Login</Button>
-        </Link>
+        <Button
+          variant="contained"
+          color="primary"
+          component={Link}
+          href="/login"
+        >
+          Login
+        </Button>
       )}
-    </div>
+    </Stack>
   );
 };
 

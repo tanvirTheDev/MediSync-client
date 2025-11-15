@@ -23,7 +23,7 @@ const LoginPage = () => {
         storeUserInfo({ accessToken: res?.data?.accessToken });
         // router.push("/dashboard");
       } else {
-        toast.error(res?.message);
+        toast.error("User Not Found");
         // setError(res?.message);
       }
     } catch (error: any) {
